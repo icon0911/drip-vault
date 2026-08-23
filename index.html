@@ -21,7 +21,6 @@
   body { font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); min-height:100vh; }
   a { color: inherit; text-decoration: none; }
 
-  /* ── NAV ── */
   nav { position:sticky; top:0; z-index:100; background:rgba(10,10,10,.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 32px; display:flex; align-items:center; justify-content:space-between; height:64px; }
   .logo { font-size:22px; font-weight:800; letter-spacing:-.5px; display:flex; align-items:center; gap:8px; }
   .logo span { color: var(--accent); }
@@ -35,7 +34,6 @@
   .admin-btn { background:var(--accent); color:#000; border:none; padding:8px 18px; border-radius:100px; cursor:pointer; font-size:13px; font-weight:700; transition:.2s; }
   .admin-btn:hover { opacity:.85; }
 
-  /* ── HERO ── */
   .hero { padding:80px 32px 60px; text-align:center; position:relative; overflow:hidden; }
   .hero::before { content:''; position:absolute; top:-200px; left:50%; transform:translateX(-50%); width:600px; height:600px; background:radial-gradient(circle, rgba(200,255,0,.08) 0%, transparent 70%); pointer-events:none; }
   .hero h1 { font-size:clamp(36px,6vw,64px); font-weight:900; letter-spacing:-2px; line-height:1.1; }
@@ -46,12 +44,10 @@
   .hero-stats .num { font-size:28px; font-weight:800; color:var(--accent); }
   .hero-stats .label { font-size:12px; color:var(--text-dim); margin-top:2px; }
 
-  /* ── FILTERS ── */
   .filters { padding:0 32px 24px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
   .filter-btn { background:var(--card); border:1px solid var(--border); color:var(--text-dim); padding:8px 20px; border-radius:100px; cursor:pointer; font-size:13px; transition:.2s; }
   .filter-btn:hover, .filter-btn.active { background:var(--accent); color:#000; border-color:var(--accent); font-weight:600; }
 
-  /* ── PRODUCTS GRID ── */
   .section-title { font-size:24px; font-weight:800; padding:0 32px; margin-bottom:24px; display:flex; align-items:center; gap:10px; }
   .section-title::before { content:''; width:4px; height:24px; background:var(--accent); border-radius:2px; }
   .products { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:20px; padding:0 32px 60px; max-width:1400px; margin:0 auto; }
@@ -70,8 +66,10 @@
   .add-cart-btn:disabled { background:var(--border); color:var(--text-dim); cursor:not-allowed; }
   .empty-state { text-align:center; padding:80px 32px; color:var(--text-dim); }
   .empty-state .icon { font-size:48px; margin-bottom:16px; }
+  .loading { text-align:center; padding:60px; color:var(--text-dim); }
+  .loading .spinner { display:inline-block; width:24px; height:24px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; margin-right:8px; vertical-align:middle; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 
-  /* ── MODAL BASE ── */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px; }
   .modal-overlay.show { display:flex; }
   .modal { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); max-width:560px; width:100%; max-height:90vh; overflow-y:auto; padding:32px; position:relative; }
@@ -80,7 +78,6 @@
   .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text-dim); font-size:24px; cursor:pointer; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition:.2s; }
   .modal-close:hover { background:rgba(255,255,255,.1); color:var(--text); }
 
-  /* ── CART MODAL ── */
   .cart-item { display:flex; gap:16px; padding:16px 0; border-bottom:1px solid var(--border); align-items:center; }
   .cart-item img { width:72px; height:72px; object-fit:cover; border-radius:10px; background:#1a1a1a; }
   .cart-item-info { flex:1; }
@@ -99,7 +96,6 @@
   .checkout-btn:hover { opacity:.85; }
   .checkout-btn:disabled { background:var(--border); color:var(--text-dim); cursor:not-allowed; }
 
-  /* ── PAYMENT MODAL ── */
   .payment-methods { display:flex; gap:12px; margin-bottom:24px; }
   .pay-method { flex:1; padding:16px; border:2px solid var(--border); border-radius:12px; text-align:center; cursor:pointer; transition:.2s; }
   .pay-method:hover, .pay-method.selected { border-color:var(--accent); }
@@ -114,7 +110,6 @@
   .order-info .row { display:flex; justify-content:space-between; padding:6px 0; font-size:13px; }
   .order-info .row .label { color:var(--text-dim); }
 
-  /* ── ADMIN ── */
   .admin-tabs { display:flex; gap:4px; margin-bottom:24px; background:rgba(255,255,255,.03); border-radius:10px; padding:4px; }
   .admin-tab { flex:1; padding:10px; text-align:center; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-dim); transition:.2s; }
   .admin-tab.active { background:var(--accent); color:#000; }
@@ -141,7 +136,6 @@
   .submit-btn:hover { opacity:.85; }
   .submit-btn:disabled { background:var(--border); color:var(--text-dim); cursor:not-allowed; }
 
-  /* ── ADMIN PRODUCT LIST ── */
   .admin-product { display:flex; gap:16px; padding:16px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:12px; margin-bottom:12px; align-items:center; }
   .admin-product img { width:64px; height:64px; object-fit:cover; border-radius:8px; background:#1a1a1a; }
   .admin-product-info { flex:1; }
@@ -152,7 +146,6 @@
   .admin-actions button:hover { border-color:var(--accent); color:var(--accent); }
   .admin-actions .danger:hover { border-color:var(--accent2); color:var(--accent2); }
 
-  /* ── PRODUCT DETAIL MODAL ── */
   .detail-layout { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
   .detail-img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:12px; background:#1a1a1a; }
   .detail-brand { font-size:12px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
@@ -167,17 +160,21 @@
   .sku-opt.selected { border-color:var(--accent); background:var(--accent); color:#000; font-weight:600; }
   .sku-opt.out { opacity:.3; cursor:not-allowed; text-decoration:line-through; }
 
-  /* ── TOAST ── */
   .toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%); background:var(--accent); color:#000; padding:14px 28px; border-radius:100px; font-weight:700; font-size:14px; z-index:999; opacity:0; transition:.3s; pointer-events:none; }
   .toast.show { opacity:1; pointer-events:auto; }
 
-  /* ── SCROLLBAR ── */
+  .sync-badge { font-size:11px; color:var(--text-dim); display:flex; align-items:center; gap:4px; }
+  .sync-badge .dot { width:6px; height:6px; border-radius:50%; }
+  .sync-badge .dot.ok { background:#4ade80; }
+  .sync-badge .dot.syncing { background:var(--accent); animation:pulse 1s infinite; }
+  .sync-badge .dot.err { background:var(--accent2); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
   ::-webkit-scrollbar { width:6px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
   ::-webkit-scrollbar-thumb:hover { background:#444; }
 
-  /* ── RESPONSIVE ── */
   @media(max-width:768px) {
     nav { padding:0 16px; }
     .hero { padding:48px 16px 40px; }
@@ -193,7 +190,6 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="logo">🔥 <span>Drip</span> Vault</div>
   <div class="nav-links">
@@ -201,14 +197,12 @@
     <a onclick="showPage('home'); scrollToProducts()">单品</a>
   </div>
   <div class="nav-right">
-    <button class="cart-btn" onclick="openCart()">
-      🛒 购物车 <span class="cart-badge" id="cartBadge">0</span>
-    </button>
+    <div class="sync-badge"><div class="dot ok" id="syncDot"></div><span id="syncText">已连接</span></div>
+    <button class="cart-btn" onclick="openCart()">🛒 <span class="cart-badge" id="cartBadge">0</span></button>
     <button class="admin-btn" onclick="openAdmin()">⚙ 管理</button>
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
   <h1>精选<em>潮流</em>单品<br>限量发售</h1>
   <p>每一件单品都经过严格鉴定，正品保障，潮流前沿</p>
@@ -219,14 +213,11 @@
   </div>
 </div>
 
-<!-- FILTERS -->
 <div class="filters" id="filters"></div>
-
-<!-- PRODUCTS -->
 <div class="section-title" style="max-width:1400px;margin:0 auto;">热门单品</div>
-<div class="products" id="productGrid"></div>
+<div class="products" id="productGrid"><div class="loading" style="grid-column:1/-1"><span class="spinner"></span>加载中...</div></div>
 
-<!-- PRODUCT DETAIL MODAL -->
+<!-- DETAIL -->
 <div class="modal-overlay" id="detailModal">
   <div class="modal modal-wide" style="position:relative">
     <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
@@ -244,21 +235,18 @@
   </div>
 </div>
 
-<!-- CART MODAL -->
+<!-- CART -->
 <div class="modal-overlay" id="cartModal">
   <div class="modal" style="position:relative">
     <button class="modal-close" onclick="closeModal('cartModal')">✕</button>
     <h2>🛒 购物车</h2>
     <div id="cartItems"></div>
-    <div class="cart-total">
-      <span class="label">合计</span>
-      <span class="amount" id="cartTotal">0</span>
-    </div>
+    <div class="cart-total"><span class="label">合计</span><span class="amount" id="cartTotal">0</span></div>
     <button class="checkout-btn" id="checkoutBtn" onclick="openPayment()">去结算</button>
   </div>
 </div>
 
-<!-- PAYMENT MODAL -->
+<!-- PAYMENT -->
 <div class="modal-overlay" id="payModal">
   <div class="modal" style="position:relative">
     <button class="modal-close" onclick="closeModal('payModal')">✕</button>
@@ -266,34 +254,38 @@
     <div class="pay-amount" id="payAmount">0</div>
     <div class="order-info" id="orderInfo"></div>
     <div class="payment-methods">
-      <div class="pay-method selected" onclick="selectPay('wechat', this)">
-        <div class="icon">💚</div>
-        <div class="name">微信支付</div>
-      </div>
-      <div class="pay-method" onclick="selectPay('alipay', this)">
-        <div class="icon">🔵</div>
-        <div class="name">支付宝</div>
-      </div>
+      <div class="pay-method selected" onclick="selectPay('wechat', this)"><div class="icon">💚</div><div class="name">微信支付</div></div>
+      <div class="pay-method" onclick="selectPay('alipay', this)"><div class="icon">🔵</div><div class="name">支付宝</div></div>
     </div>
-    <div class="qr-area" id="qrArea">
-      <canvas id="qrCanvas"></canvas>
-    </div>
+    <div class="qr-area" id="qrArea"><canvas id="qrCanvas"></canvas></div>
     <p class="qr-hint" id="qrHint">请使用微信扫一扫完成支付</p>
     <button class="submit-btn" onclick="confirmPay()" style="margin-top:16px">✅ 我已完成支付</button>
   </div>
 </div>
 
-<!-- ADMIN MODAL -->
+<!-- ADMIN LOGIN -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal" style="position:relative;max-width:400px">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <h2>🔐 管理员登录</h2>
+    <div class="form-group">
+      <label>管理密码</label>
+      <input type="password" id="loginPwd" placeholder="输入管理密码" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="submit-btn" onclick="doLogin()">登录</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
 <div class="modal-overlay" id="adminModal">
   <div class="modal modal-wide" style="position:relative">
     <button class="modal-close" onclick="closeModal('adminModal')">✕</button>
-    <h2>⚙ 后台管理</h2>
+    <h2>⚙ 后台管理 <span style="font-size:12px;color:var(--text-dim);font-weight:400;margin-left:8px">云端同步</span></h2>
     <div class="admin-tabs">
       <div class="admin-tab active" onclick="switchAdminTab('add', this)">上架单品</div>
       <div class="admin-tab" onclick="switchAdminTab('list', this)">商品管理</div>
       <div class="admin-tab" onclick="switchAdminTab('orders', this)">订单记录</div>
     </div>
-    <!-- ADD PRODUCT -->
     <div id="adminAdd">
       <div class="img-upload-area" id="imgUploadArea">
         <input type="file" accept="image/*" id="imgInput" onchange="handleImgUpload(event)">
@@ -302,108 +294,167 @@
         <img class="img-preview" id="imgPreview" style="display:none">
       </div>
       <div class="form-row" style="margin-top:16px">
-        <div class="form-group">
-          <label>品牌</label>
-          <input type="text" id="pBrand" placeholder="如：Nike, Supreme...">
-        </div>
-        <div class="form-group">
-          <label>分类</label>
-          <select id="pCategory">
-            <option value="鞋款">鞋款</option>
-            <option value="上装">上装</option>
-            <option value="下装">下装</option>
-            <option value="配饰">配饰</option>
-            <option value="包袋">包袋</option>
-            <option value="限定">限定</option>
-          </select>
-        </div>
+        <div class="form-group"><label>品牌</label><input type="text" id="pBrand" placeholder="如：Nike, Supreme..."></div>
+        <div class="form-group"><label>分类</label><select id="pCategory"><option value="鞋款">鞋款</option><option value="上装">上装</option><option value="下装">下装</option><option value="配饰">配饰</option><option value="包袋">包袋</option><option value="限定">限定</option></select></div>
       </div>
-      <div class="form-group">
-        <label>商品名称</label>
-        <input type="text" id="pName" placeholder="输入商品名称">
-      </div>
+      <div class="form-group"><label>商品名称</label><input type="text" id="pName" placeholder="输入商品名称"></div>
       <div class="form-row">
-        <div class="form-group">
-          <label>售价 (¥)</label>
-          <input type="number" id="pPrice" placeholder="0.00">
-        </div>
-        <div class="form-group">
-          <label>原价 (¥) <span style="color:var(--text-dim);font-weight:400">可选</span></label>
-          <input type="number" id="pOriginal" placeholder="0.00">
-        </div>
+        <div class="form-group"><label>售价 (¥)</label><input type="number" id="pPrice" placeholder="0.00"></div>
+        <div class="form-group"><label>原价 (¥) <span style="color:var(--text-dim);font-weight:400">可选</span></label><input type="number" id="pOriginal" placeholder="0.00"></div>
       </div>
-      <div class="form-group">
-        <label>商品描述</label>
-        <textarea id="pDesc" placeholder="描述商品特点、材质、故事..."></textarea>
-      </div>
+      <div class="form-group"><label>商品描述</label><textarea id="pDesc" placeholder="描述商品特点、材质、故事..."></textarea></div>
       <div class="form-group">
         <label>SKU 管理 <span style="color:var(--text-dim);font-weight:400">（规格 / 库存）</span></label>
         <div class="sku-manager" id="skuManager">
-          <div class="sku-row">
-            <input type="text" placeholder="规格（如：黑色 / 42码）" class="sku-spec">
-            <input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none">
-            <button class="sku-remove" onclick="removeSkuRow(this)">✕</button>
-          </div>
+          <div class="sku-row"><input type="text" placeholder="规格（如：黑色 / 42码）" class="sku-spec"><input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none"><button class="sku-remove" onclick="removeSkuRow(this)">✕</button></div>
         </div>
         <button class="add-sku-btn" onclick="addSkuRow()">+ 添加 SKU</button>
       </div>
       <button class="submit-btn" id="publishBtn" onclick="publishProduct()">🚀 上架商品</button>
     </div>
-    <!-- PRODUCT LIST -->
     <div id="adminList" style="display:none"></div>
-    <!-- ORDERS -->
     <div id="adminOrders" style="display:none"></div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ── DATA STORE ──
-const DB_KEY = 'dripvault_products';
-const ORDER_KEY = 'dripvault_orders';
+// ══════════════════════════════════════════
+//  GITHUB CLOUD SYNC CONFIG
+// ══════════════════════════════════════════
+const GH = {
+  owner: 'icon0911',
+  repo: 'drip-vault',
+  branch: 'main',
+  dataFile: 'data/products.json',
+  orderFile: 'data/orders.json',
+  get rawBase() { return `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}`; },
+  get apiBase() { return `https://api.github.com/repos/${this.owner}/${this.repo}`; },
+};
+const ADMIN_PWD = 'drip2024';
 const CART_KEY = 'dripvault_cart';
 
-function loadProducts() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
-function saveProducts(p) { localStorage.setItem(DB_KEY, JSON.stringify(p)); }
-function loadOrders() { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
-function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-function loadCart() { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
-function saveCart(c) { localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartBadge(); }
-
-let cart = loadCart();
+let _products = [];
+let _orders = [];
+let _ghToken = '';
+let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 let selectedPay = 'wechat';
 let detailProduct = null;
 let detailSelectedSku = null;
 let editingId = null;
 
-// ── INIT ──
-function init() {
-  if (loadProducts().length === 0) seedData();
+// ══════════════════════════════════════════
+//  GITHUB API
+// ══════════════════════════════════════════
+async function ghFetch(path, opts = {}) {
+  const url = path.startsWith('http') ? path : `${GH.apiBase}/${path}`;
+  const headers = { 'Accept': 'application/vnd.github+json', ...opts.headers };
+  if (_ghToken) headers['Authorization'] = `token ${_ghToken}`;
+  const res = await fetch(url, { ...opts, headers });
+  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+  return res;
+}
+
+async function loadCloudData() {
+  setSync('syncing');
+  try {
+    // Try loading from GitHub raw (no auth needed, uses CDN cache)
+    const [prodRes, orderRes] = await Promise.all([
+      fetch(`${GH.rawBase}/${GH.dataFile}?t=${Date.now()}`),
+      fetch(`${GH.rawBase}/${GH.orderFile}?t=${Date.now()}`).catch(() => null)
+    ]);
+    if (prodRes.ok) {
+      const text = await prodRes.text();
+      _products = JSON.parse(text);
+    }
+    if (orderRes && orderRes.ok) {
+      const text = await orderRes.text();
+      _orders = JSON.parse(text);
+    }
+    setSync('ok');
+  } catch (e) {
+    console.warn('Cloud load failed, using seed data', e);
+    if (_products.length === 0) seedData();
+    setSync('err');
+  }
+  renderAll();
+}
+
+async function saveToCloud() {
+  if (!_ghToken) { toast('请先登录管理后台 ⚠️'); return false; }
+  setSync('syncing');
+  try {
+    await commitFile(GH.dataFile, JSON.stringify(_products, null, 2), 'update products');
+    await commitFile(GH.orderFile, JSON.stringify(_orders, null, 2), 'update orders');
+    setSync('ok');
+    return true;
+  } catch (e) {
+    console.error('Save failed', e);
+    setSync('err');
+    toast('云端保存失败 ⚠️');
+    return false;
+  }
+}
+
+async function commitFile(path, content, message) {
+  // Get current file SHA (if exists)
+  let sha = null;
+  try {
+    const res = await ghFetch(`contents/${path}`);
+    const data = await res.json();
+    sha = data.sha;
+  } catch (e) { /* file doesn't exist yet */ }
+
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(content))),
+    branch: GH.branch,
+  };
+  if (sha) body.sha = sha;
+
+  await ghFetch(`contents/${path}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+function setSync(status) {
+  const dot = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  dot.className = 'dot ' + status;
+  text.textContent = status === 'ok' ? '已同步' : status === 'syncing' ? '同步中...' : '离线模式';
+}
+
+// ══════════════════════════════════════════
+//  SEED DATA
+// ══════════════════════════════════════════
+function seedData() {
+  _products = [
+    { id:'p1', brand:'Nike', name:'Air Jordan 1 Retro High OG "Chicago Lost & Found"', price:2899, original:3299, category:'鞋款', desc:'经典芝加哥配色复刻，做旧中底呈现年代感，皮质鞋面质感一流。附带特殊鞋盒及配件。', img:'', skUs:[{spec:'US 8 / 41',stock:3},{spec:'US 9 / 42',stock:5},{spec:'US 10 / 43',stock:2},{spec:'US 11 / 44',stock:4}] },
+    { id:'p2', brand:'Supreme', name:'Box Logo Hooded Sweatshirt FW24', price:3599, original:0, category:'上装', desc:'Supreme 经典 Box Logo 连帽卫衣，重磅纯棉面料，oversize 剪裁。', img:'', skUs:[{spec:'M / 黑色',stock:2},{spec:'L / 黑色',stock:3},{spec:'XL / 黑色',stock:1},{spec:'L / 灰色',stock:2}] },
+    { id:'p3', brand:'Travis Scott x Nike', name:'Air Max 1 "Cactus Jack"', price:4299, original:4999, category:'鞋款', desc:'Travis Scott 与 Nike 联名 Air Max 1，反向 Swoosh 设计，附赠多副鞋带。', img:'', skUs:[{spec:'US 8 / 41',stock:1},{spec:'US 9 / 42',stock:2},{spec:'US 10 / 43',stock:1}] },
+    { id:'p4', brand:'Chrome Hearts', name:'CH Plus 戒指 纯银', price:5800, original:0, category:'配饰', desc:'Chrome Hearts 经典十字花戒指，925纯银手工打造。', img:'', skUs:[{spec:'US 7 / 14号',stock:2},{spec:'US 8 / 16号',stock:3},{spec:'US 9 / 18号',stock:1}] },
+    { id:'p5', brand:'Stüssy', name:'Basic Stüssy Tee 限定色', price:699, original:899, category:'上装', desc:'Stüssy 基础 Logo T恤，280g 重磅棉，限定薄荷绿配色。', img:'', skUs:[{spec:'M',stock:6},{spec:'L',stock:8},{spec:'XL',stock:4}] },
+    { id:'p6', brand:'Off-White', name:'Industrial Belt 黄色', price:2199, original:0, category:'配饰', desc:'Off-White 经典工业风腰带，3米超长设计，标志性黄色。', img:'', skUs:[{spec:'均码',stock:5}] },
+  ];
+  _orders = [];
+}
+
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+function renderAll() {
   renderProducts();
   renderFilters();
   updateCartBadge();
   updateStats();
 }
 
-function seedData() {
-  const demos = [
-    { id:'p1', brand:'Nike', name:'Air Jordan 1 Retro High OG "Chicago Lost & Found"', price:2899, original:3299, category:'鞋款', desc:'经典芝加哥配色复刻，做旧中底呈现年代感，皮质鞋面质感一流。附带特殊鞋盒及配件。', img:'', skUs:[{spec:'US 8 / 41',stock:3},{spec:'US 9 / 42',stock:5},{spec:'US 10 / 43',stock:2},{spec:'US 11 / 44',stock:4}] },
-    { id:'p2', brand:'Supreme', name:'Box Logo Hooded Sweatshirt FW24', price:3599, original:0, category:'上装', desc:'Supreme 经典 Box Logo 连帽卫衣，重磅纯棉面料，oversize 剪裁。2024秋冬款限定配色。', img:'', skUs:[{spec:'M / 黑色',stock:2},{spec:'L / 黑色',stock:3},{spec:'XL / 黑色',stock:1},{spec:'L / 灰色',stock:2}] },
-    { id:'p3', brand:'Travis Scott x Nike', name:'Air Max 1 "Cactus Jack"', price:4299, original:4999, category:'鞋款', desc:'Travis Scott 与 Nike 联名 Air Max 1，反向 Swoosh 设计，附赠多副鞋带。', img:'', skUs:[{spec:'US 8 / 41',stock:1},{spec:'US 9 / 42',stock:2},{spec:'US 10 / 43',stock:1}] },
-    { id:'p4', brand:'Chrome Hearts', name:'CH Plus 戒指 纯银', price:5800, original:0, category:'配饰', desc:'Chrome Hearts 经典十字花戒指，925纯银手工打造，附品牌专属包装。', img:'', skUs:[{spec:'US 7 / 14号',stock:2},{spec:'US 8 / 16号',stock:3},{spec:'US 9 / 18号',stock:1}] },
-    { id:'p5', brand:'Stüssy', name:'Basic Stüssy Tee 限定色', price:699, original:899, category:'上装', desc:'Stüssy 基础 Logo T恤，280g 重磅棉，限定薄荷绿配色。', img:'', skUs:[{spec:'M',stock:6},{spec:'L',stock:8},{spec:'XL',stock:4}] },
-    { id:'p6', brand:'Off-White', name:'Industrial Belt 黄色', price:2199, original:0, category:'配饰', desc:'Off-White 经典工业风腰带，3米超长设计，标志性黄色。', img:'', skUs:[{spec:'均码',stock:5}] },
-  ];
-  saveProducts(demos);
-}
-
-// ── RENDER PRODUCTS ──
 function renderProducts(filter) {
-  const products = loadProducts();
   const grid = document.getElementById('productGrid');
-  const filtered = filter && filter !== '全部' ? products.filter(p => p.category === filter) : products;
+  const filtered = filter && filter !== '全部' ? _products.filter(p => p.category === filter) : _products;
   if (filtered.length === 0) {
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">📦</div><p>暂无商品</p></div>';
     return;
@@ -426,8 +477,7 @@ function renderProducts(filter) {
 }
 
 function renderFilters() {
-  const products = loadProducts();
-  const cats = ['全部', ...new Set(products.map(p => p.category))];
+  const cats = ['全部', ...new Set(_products.map(p => p.category))];
   document.getElementById('filters').innerHTML = cats.map((c,i) =>
     `<button class="filter-btn ${i===0?'active':''}" onclick="filterProducts('${c}', this)">${c}</button>`
   ).join('');
@@ -440,18 +490,17 @@ function filterProducts(cat, btn) {
 }
 
 function updateStats() {
-  const products = loadProducts();
-  document.getElementById('statProducts').textContent = products.length;
-  document.getElementById('statBrands').textContent = new Set(products.map(p=>p.brand)).size;
+  document.getElementById('statProducts').textContent = _products.length;
+  document.getElementById('statBrands').textContent = new Set(_products.map(p=>p.brand)).size;
 }
 
-function scrollToProducts() {
-  document.querySelector('.section-title').scrollIntoView({behavior:'smooth'});
-}
+function scrollToProducts() { document.querySelector('.section-title').scrollIntoView({behavior:'smooth'}); }
 
-// ── PRODUCT DETAIL ──
+// ══════════════════════════════════════════
+//  PRODUCT DETAIL
+// ══════════════════════════════════════════
 function openDetail(id) {
-  const p = loadProducts().find(x => x.id === id);
+  const p = _products.find(x => x.id === id);
   if (!p) return;
   detailProduct = p;
   detailSelectedSku = null;
@@ -466,9 +515,7 @@ function openDetail(id) {
     sel.innerHTML = `<label>选择规格</label><div class="sku-options">${p.skUs.map((s,i) =>
       `<div class="sku-opt ${s.stock<=0?'out':''}" onclick="${s.stock>0?`selectDetailSku(${i},this)`:''}">${s.spec}${s.stock<=0?' (售罄)':''}</div>`
     ).join('')}</div>`;
-  } else {
-    sel.innerHTML = '';
-  }
+  } else { sel.innerHTML = ''; }
   document.getElementById('detailAddBtn').disabled = true;
   openModal('detailModal');
 }
@@ -487,24 +534,21 @@ function addFromDetail() {
   closeModal('detailModal');
 }
 
-// ── CART ──
+// ══════════════════════════════════════════
+//  CART
+// ══════════════════════════════════════════
 function addToCart(productId, skuSpec, price, name, brand, img) {
   const key = `${productId}::${skuSpec}`;
   const existing = cart.find(c => c.key === key);
-  if (existing) { existing.qty++; }
-  else { cart.push({ key, productId, skuSpec, price, name, brand, img, qty:1 }); }
-  saveCart(cart);
+  if (existing) { existing.qty++; } else { cart.push({ key, productId, skuSpec, price, name, brand, img, qty:1 }); }
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  updateCartBadge();
   toast('已加入购物车 🛒');
 }
 
-function updateCartBadge() {
-  document.getElementById('cartBadge').textContent = cart.reduce((s,c) => s+c.qty, 0);
-}
+function updateCartBadge() { document.getElementById('cartBadge').textContent = cart.reduce((s,c) => s+c.qty, 0); }
 
-function openCart() {
-  renderCart();
-  openModal('cartModal');
-}
+function openCart() { renderCart(); openModal('cartModal'); }
 
 function renderCart() {
   const container = document.getElementById('cartItems');
@@ -530,25 +574,16 @@ function renderCart() {
       <button class="cart-remove" onclick="removeFromCart(${i})">🗑</button>
     </div>
   `).join('');
-  const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
-  document.getElementById('cartTotal').textContent = total.toLocaleString();
+  document.getElementById('cartTotal').textContent = cart.reduce((s,c) => s + c.price * c.qty, 0).toLocaleString();
   document.getElementById('checkoutBtn').disabled = false;
 }
 
-function changeQty(i, d) {
-  cart[i].qty += d;
-  if (cart[i].qty <= 0) cart.splice(i, 1);
-  saveCart(cart);
-  renderCart();
-}
+function changeQty(i, d) { cart[i].qty += d; if (cart[i].qty <= 0) cart.splice(i, 1); localStorage.setItem(CART_KEY, JSON.stringify(cart)); renderCart(); updateCartBadge(); }
+function removeFromCart(i) { cart.splice(i, 1); localStorage.setItem(CART_KEY, JSON.stringify(cart)); renderCart(); updateCartBadge(); }
 
-function removeFromCart(i) {
-  cart.splice(i, 1);
-  saveCart(cart);
-  renderCart();
-}
-
-// ── PAYMENT ──
+// ══════════════════════════════════════════
+//  PAYMENT
+// ══════════════════════════════════════════
 function openPayment() {
   if (cart.length === 0) return;
   closeModal('cartModal');
@@ -568,8 +603,7 @@ function selectPay(method, el) {
   selectedPay = method;
   document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
   el.classList.add('selected');
-  const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
-  generateQR(total);
+  generateQR(cart.reduce((s,c) => s + c.price * c.qty, 0));
   document.getElementById('qrHint').textContent = method === 'wechat' ? '请使用微信扫一扫完成支付' : '请使用支付宝扫一扫完成支付';
 }
 
@@ -577,97 +611,69 @@ function generateQR(amount) {
   const canvas = document.getElementById('qrCanvas');
   const ctx = canvas.getContext('2d');
   canvas.width = 220; canvas.height = 220;
-  // Simple QR-like pattern (demo)
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0,0,220,220);
-  ctx.fillStyle = '#000';
-  const size = 220;
-  const cellSize = size / 25;
-  // Generate deterministic pattern from amount
-  const seed = Math.floor(amount * 100);
-  const rng = mulberry32(seed);
-  // Draw position patterns
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,220,220);
+  const size = 220, cellSize = size / 25;
+  const rng = mulberry32(Math.floor(amount * 100));
   drawFinder(ctx, 0, 0, cellSize);
   drawFinder(ctx, 18*cellSize, 0, cellSize);
   drawFinder(ctx, 0, 18*cellSize, cellSize);
-  // Fill data area
-  for (let r = 0; r < 25; r++) {
-    for (let c = 0; c < 25; c++) {
-      if ((r<8&&c<8)||(r<8&&c>16)||(r>16&&c<8)) continue;
-      if (rng() > 0.5) {
-        ctx.fillStyle = selectedPay === 'wechat' ? '#07C160' : '#1677FF';
-        ctx.fillRect(c*cellSize, r*cellSize, cellSize-1, cellSize-1);
-      }
-    }
+  for (let r = 0; r < 25; r++) for (let c = 0; c < 25; c++) {
+    if ((r<8&&c<8)||(r<8&&c>16)||(r>16&&c<8)) continue;
+    if (rng() > 0.5) { ctx.fillStyle = selectedPay === 'wechat' ? '#07C160' : '#1677FF'; ctx.fillRect(c*cellSize, r*cellSize, cellSize-1, cellSize-1); }
   }
-  // Center logo
-  const logoSize = 5*cellSize;
-  const logoX = (size-logoSize)/2;
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(logoX-4, logoX-4, logoSize+8, logoSize+8);
-  ctx.fillStyle = selectedPay === 'wechat' ? '#07C160' : '#1677FF';
-  ctx.fillRect(logoX, logoX, logoSize, logoSize);
-  ctx.fillStyle = '#fff';
-  ctx.font = `bold ${cellSize*2.5}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+  const logoSize = 5*cellSize, logoX = (size-logoSize)/2;
+  ctx.fillStyle = '#fff'; ctx.fillRect(logoX-4, logoX-4, logoSize+8, logoSize+8);
+  ctx.fillStyle = selectedPay === 'wechat' ? '#07C160' : '#1677FF'; ctx.fillRect(logoX, logoX, logoSize, logoSize);
+  ctx.fillStyle = '#fff'; ctx.font = `bold ${cellSize*2.5}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText(selectedPay === 'wechat' ? '微' : '支', size/2, size/2);
 }
 
 function drawFinder(ctx, x, y, cell) {
-  ctx.fillStyle = '#000';
-  ctx.fillRect(x, y, 7*cell, 7*cell);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(x+cell, y+cell, 5*cell, 5*cell);
-  ctx.fillStyle = '#000';
-  ctx.fillRect(x+2*cell, y+2*cell, 3*cell, 3*cell);
+  ctx.fillStyle = '#000'; ctx.fillRect(x, y, 7*cell, 7*cell);
+  ctx.fillStyle = '#fff'; ctx.fillRect(x+cell, y+cell, 5*cell, 5*cell);
+  ctx.fillStyle = '#000'; ctx.fillRect(x+2*cell, y+2*cell, 3*cell, 3*cell);
 }
 
-function mulberry32(a) {
-  return function() {
-    a |= 0; a = a + 0x6D2B79F5 | 0;
-    var t = Math.imul(a ^ a >>> 15, 1 | a);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  }
-}
+function mulberry32(a) { return function() { a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296; } }
 
-function confirmPay() {
+async function confirmPay() {
   const orderId = 'DV' + Date.now().toString(36).toUpperCase();
   const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
-  const order = {
-    id: orderId,
-    items: [...cart],
-    total,
-    payMethod: selectedPay === 'wechat' ? '微信支付' : '支付宝',
-    time: new Date().toLocaleString('zh-CN'),
-    status: '已完成'
-  };
+  const order = { id:orderId, items:[...cart], total, payMethod:selectedPay==='wechat'?'微信支付':'支付宝', time:new Date().toLocaleString('zh-CN'), status:'已完成' };
   // Deduct stock
-  const products = loadProducts();
   cart.forEach(c => {
-    const p = products.find(x => x.id === c.productId);
-    if (p && p.skUs) {
-      const sku = p.skUs.find(s => s.spec === c.skuSpec);
-      if (sku) sku.stock = Math.max(0, sku.stock - c.qty);
-    }
+    const p = _products.find(x => x.id === c.productId);
+    if (p && p.skUs) { const sku = p.skUs.find(s => s.spec === c.skuSpec); if (sku) sku.stock = Math.max(0, sku.stock - c.qty); }
   });
-  saveProducts(products);
-  // Save order
-  const orders = loadOrders();
-  orders.unshift(order);
-  saveOrders(orders);
-  // Clear cart
+  _orders.unshift(order);
   cart = [];
-  saveCart(cart);
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
   closeModal('payModal');
   toast(`支付成功！订单号：${orderId} ✅`);
-  renderProducts();
-  renderFilters();
+  renderAll();
+  // Try to save to cloud (best effort)
+  if (_ghToken) saveToCloud();
 }
 
-// ── ADMIN ──
+// ══════════════════════════════════════════
+//  ADMIN LOGIN
+// ══════════════════════════════════════════
 function openAdmin() {
+  if (sessionStorage.getItem('dv_admin') === '1') { openAdminPanel(); return; }
+  openModal('loginModal');
+  document.getElementById('loginPwd').value = '';
+  document.getElementById('loginPwd').focus();
+}
+
+function doLogin() {
+  const pwd = document.getElementById('loginPwd').value;
+  if (pwd !== ADMIN_PWD) { toast('密码错误 ⚠️'); return; }
+  sessionStorage.setItem('dv_admin', '1');
+  closeModal('loginModal');
+  openAdminPanel();
+}
+
+function openAdminPanel() {
   editingId = null;
   document.getElementById('publishBtn').textContent = '🚀 上架商品';
   clearProductForm();
@@ -676,6 +682,9 @@ function openAdmin() {
   openModal('adminModal');
 }
 
+// ══════════════════════════════════════════
+//  ADMIN ACTIONS
+// ══════════════════════════════════════════
 function switchAdminTab(tab, el) {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
@@ -690,10 +699,7 @@ function handleImgUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = function(ev) {
-    document.getElementById('imgPreview').src = ev.target.result;
-    document.getElementById('imgPreview').style.display = 'block';
-  };
+  reader.onload = function(ev) { document.getElementById('imgPreview').src = ev.target.result; document.getElementById('imgPreview').style.display = 'block'; };
   reader.readAsDataURL(file);
 }
 
@@ -701,33 +707,21 @@ function addSkuRow() {
   const mgr = document.getElementById('skuManager');
   const row = document.createElement('div');
   row.className = 'sku-row';
-  row.innerHTML = `
-    <input type="text" placeholder="规格（如：白色 / L码）" class="sku-spec">
-    <input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none">
-    <button class="sku-remove" onclick="removeSkuRow(this)">✕</button>
-  `;
+  row.innerHTML = `<input type="text" placeholder="规格（如：白色 / L码）" class="sku-spec"><input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none"><button class="sku-remove" onclick="removeSkuRow(this)">✕</button>`;
   mgr.appendChild(row);
 }
 
-function removeSkuRow(btn) {
-  const rows = document.querySelectorAll('#skuManager .sku-row');
-  if (rows.length <= 1) return;
-  btn.parentElement.remove();
-}
+function removeSkuRow(btn) { if (document.querySelectorAll('#skuManager .sku-row').length <= 1) return; btn.parentElement.remove(); }
 
 function getSkUsFromForm() {
   const specs = document.querySelectorAll('.sku-spec');
   const stocks = document.querySelectorAll('.sku-stock');
   const skUs = [];
-  specs.forEach((s,i) => {
-    const spec = s.value.trim();
-    const stock = parseInt(stocks[i].value) || 0;
-    if (spec) skUs.push({ spec, stock });
-  });
+  specs.forEach((s,i) => { const spec=s.value.trim(); const stock=parseInt(stocks[i].value)||0; if(spec) skUs.push({spec,stock}); });
   return skUs;
 }
 
-function publishProduct() {
+async function publishProduct() {
   const brand = document.getElementById('pBrand').value.trim();
   const name = document.getElementById('pName').value.trim();
   const price = parseFloat(document.getElementById('pPrice').value);
@@ -735,12 +729,9 @@ function publishProduct() {
   const skUs = getSkUsFromForm();
   if (skUs.length === 0) { toast('请至少添加一个 SKU ⚠️'); return; }
 
-  const products = loadProducts();
   const product = {
     id: editingId || 'p' + Date.now(),
-    brand,
-    name,
-    price,
+    brand, name, price,
     original: parseFloat(document.getElementById('pOriginal').value) || 0,
     category: document.getElementById('pCategory').value,
     desc: document.getElementById('pDesc').value.trim(),
@@ -749,21 +740,18 @@ function publishProduct() {
   };
 
   if (editingId) {
-    const idx = products.findIndex(p => p.id === editingId);
-    if (idx >= 0) products[idx] = product;
+    const idx = _products.findIndex(p => p.id === editingId);
+    if (idx >= 0) _products[idx] = product;
     toast('商品已更新 ✅');
   } else {
-    products.push(product);
+    _products.push(product);
     toast('商品已上架 🚀');
   }
 
-  saveProducts(products);
-  clearProductForm();
-  editingId = null;
+  clearProductForm(); editingId = null;
   document.getElementById('publishBtn').textContent = '🚀 上架商品';
-  renderProducts();
-  renderFilters();
-  renderAdminList();
+  renderAll(); renderAdminList();
+  await saveToCloud();
 }
 
 function clearProductForm() {
@@ -772,22 +760,13 @@ function clearProductForm() {
   document.getElementById('imgPreview').style.display = 'none';
   document.getElementById('imgPreview').src = '';
   document.getElementById('imgInput').value = '';
-  document.getElementById('skuManager').innerHTML = `
-    <div class="sku-row">
-      <input type="text" placeholder="规格（如：黑色 / 42码）" class="sku-spec">
-      <input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none">
-      <button class="sku-remove" onclick="removeSkuRow(this)">✕</button>
-    </div>`;
+  document.getElementById('skuManager').innerHTML = `<div class="sku-row"><input type="text" placeholder="规格（如：黑色 / 42码）" class="sku-spec"><input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none"><button class="sku-remove" onclick="removeSkuRow(this)">✕</button></div>`;
 }
 
 function renderAdminList() {
-  const products = loadProducts();
   const container = document.getElementById('adminList');
-  if (products.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">📦</div><p>暂无商品</p></div>';
-    return;
-  }
-  container.innerHTML = products.map(p => {
+  if (_products.length === 0) { container.innerHTML = '<div class="empty-state"><div class="icon">📦</div><p>暂无商品</p></div>'; return; }
+  container.innerHTML = _products.map(p => {
     const totalStock = (p.skUs||[]).reduce((s,sk) => s+sk.stock, 0);
     const skuText = (p.skUs||[]).map(s => `${s.spec}(${s.stock})`).join('、');
     return `
@@ -807,7 +786,7 @@ function renderAdminList() {
 }
 
 function editProduct(id) {
-  const p = loadProducts().find(x => x.id === id);
+  const p = _products.find(x => x.id === id);
   if (!p) return;
   editingId = id;
   document.getElementById('pBrand').value = p.brand;
@@ -816,52 +795,36 @@ function editProduct(id) {
   document.getElementById('pOriginal').value = p.original || '';
   document.getElementById('pCategory').value = p.category;
   document.getElementById('pDesc').value = p.desc;
-  if (p.img) {
-    document.getElementById('imgPreview').src = p.img;
-    document.getElementById('imgPreview').style.display = 'block';
-  }
-  // Populate SKUs
+  if (p.img) { document.getElementById('imgPreview').src = p.img; document.getElementById('imgPreview').style.display = 'block'; }
   const mgr = document.getElementById('skuManager');
   mgr.innerHTML = '';
   (p.skUs || []).forEach(s => {
-    const row = document.createElement('div');
-    row.className = 'sku-row';
-    row.innerHTML = `
-      <input type="text" placeholder="规格" class="sku-spec" value="${s.spec}">
-      <input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none" value="${s.stock}">
-      <button class="sku-remove" onclick="removeSkuRow(this)">✕</button>
-    `;
+    const row = document.createElement('div'); row.className = 'sku-row';
+    row.innerHTML = `<input type="text" placeholder="规格" class="sku-spec" value="${s.spec}"><input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none" value="${s.stock}"><button class="sku-remove" onclick="removeSkuRow(this)">✕</button>`;
     mgr.appendChild(row);
   });
   if (mgr.children.length === 0) addSkuRow();
   document.getElementById('publishBtn').textContent = '💾 保存修改';
-  // Switch to add tab
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.querySelector('.admin-tab').classList.add('active');
   document.getElementById('adminAdd').style.display = 'block';
   document.getElementById('adminList').style.display = 'none';
   document.getElementById('adminOrders').style.display = 'none';
-  document.querySelector('.modal').scrollTop = 0;
+  document.querySelector('#adminModal .modal').scrollTop = 0;
 }
 
-function deleteProduct(id) {
+async function deleteProduct(id) {
   if (!confirm('确定要删除这件商品吗？')) return;
-  const products = loadProducts().filter(p => p.id !== id);
-  saveProducts(products);
-  renderProducts();
-  renderFilters();
-  renderAdminList();
+  _products = _products.filter(p => p.id !== id);
+  renderAll(); renderAdminList();
   toast('商品已删除 🗑');
+  await saveToCloud();
 }
 
 function renderAdminOrders() {
-  const orders = loadOrders();
   const container = document.getElementById('adminOrders');
-  if (orders.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>暂无订单</p></div>';
-    return;
-  }
-  container.innerHTML = orders.map(o => `
+  if (_orders.length === 0) { container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>暂无订单</p></div>'; return; }
+  container.innerHTML = _orders.map(o => `
     <div class="admin-product" style="flex-direction:column;align-items:flex-start">
       <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
         <div style="font-weight:700;font-size:14px">📦 ${o.id}</div>
@@ -876,30 +839,21 @@ function renderAdminOrders() {
   `).join('');
 }
 
-// ── MODAL HELPERS ──
+// ══════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════
 function openModal(id) { document.getElementById(id).classList.add('show'); document.body.style.overflow='hidden'; }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); document.body.style.overflow=''; }
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
-});
+document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); }); });
 
-// ── TOAST ──
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
-// ── KEYBOARD ──
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.show').forEach(m => closeModal(m.id));
-  }
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.show').forEach(m => closeModal(m.id)); });
 
-// ── GO ──
-init();
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+loadCloudData();
 </script>
 </body>
 </html>
