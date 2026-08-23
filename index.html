@@ -257,7 +257,7 @@
       <div class="pay-method selected" onclick="selectPay('wechat', this)"><div class="icon">💚</div><div class="name">微信支付</div></div>
       <div class="pay-method" onclick="selectPay('alipay', this)"><div class="icon">🔵</div><div class="name">支付宝</div></div>
     </div>
-    <div class="qr-area" id="qrArea"><canvas id="qrCanvas"></canvas></div>
+    <div class="qr-area" id="qrArea"><img src="images/wechat.png" style="max-width:220px;border-radius:12px" alt="收款码"></div>
     <p class="qr-hint" id="qrHint">请使用微信扫一扫完成支付</p>
     <button class="submit-btn" onclick="confirmPay()" style="margin-top:16px">✅ 我已完成支付</button>
   </div>
@@ -599,7 +599,7 @@ function openPayment() {
   ).join('');
   selectedPay = 'wechat';
   document.querySelectorAll('.pay-method').forEach((m,i) => m.classList.toggle('selected', i===0));
-  generateQR(total);
+  showPayQR('wechat');
   document.getElementById('qrHint').textContent = '请使用微信扫一扫完成支付';
   openModal('payModal');
 }
@@ -608,38 +608,15 @@ function selectPay(method, el) {
   selectedPay = method;
   document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
   el.classList.add('selected');
-  generateQR(cart.reduce((s,c) => s + c.price * c.qty, 0));
+  showPayQR(method);
   document.getElementById('qrHint').textContent = method === 'wechat' ? '请使用微信扫一扫完成支付' : '请使用支付宝扫一扫完成支付';
 }
 
-function generateQR(amount) {
-  const canvas = document.getElementById('qrCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = 220; canvas.height = 220;
-  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,220,220);
-  const size = 220, cellSize = size / 25;
-  const rng = mulberry32(Math.floor(amount * 100));
-  drawFinder(ctx, 0, 0, cellSize);
-  drawFinder(ctx, 18*cellSize, 0, cellSize);
-  drawFinder(ctx, 0, 18*cellSize, cellSize);
-  for (let r = 0; r < 25; r++) for (let c = 0; c < 25; c++) {
-    if ((r<8&&c<8)||(r<8&&c>16)||(r>16&&c<8)) continue;
-    if (rng() > 0.5) { ctx.fillStyle = selectedPay === 'wechat' ? '#07C160' : '#1677FF'; ctx.fillRect(c*cellSize, r*cellSize, cellSize-1, cellSize-1); }
-  }
-  const logoSize = 5*cellSize, logoX = (size-logoSize)/2;
-  ctx.fillStyle = '#fff'; ctx.fillRect(logoX-4, logoX-4, logoSize+8, logoSize+8);
-  ctx.fillStyle = selectedPay === 'wechat' ? '#07C160' : '#1677FF'; ctx.fillRect(logoX, logoX, logoSize, logoSize);
-  ctx.fillStyle = '#fff'; ctx.font = `bold ${cellSize*2.5}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(selectedPay === 'wechat' ? '微' : '支', size/2, size/2);
+function showPayQR(method) {
+  const area = document.getElementById('qrArea');
+  const src = method === 'wechat' ? 'images/wechat.png' : 'images/alipay.jpg';
+  area.innerHTML = `<img src="${src}" style="max-width:220px;border-radius:12px" alt="${method === 'wechat' ? '微信' : '支付宝'}收款码">`;
 }
-
-function drawFinder(ctx, x, y, cell) {
-  ctx.fillStyle = '#000'; ctx.fillRect(x, y, 7*cell, 7*cell);
-  ctx.fillStyle = '#fff'; ctx.fillRect(x+cell, y+cell, 5*cell, 5*cell);
-  ctx.fillStyle = '#000'; ctx.fillRect(x+2*cell, y+2*cell, 3*cell, 3*cell);
-}
-
-function mulberry32(a) { return function() { a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296; } }
 
 async function confirmPay() {
   const orderId = 'DV' + Date.now().toString(36).toUpperCase();
