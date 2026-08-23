@@ -2,849 +2,1697 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Drip Vault · 潮流单品交易平台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Drip Vault - 精选潮流单品</title>
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --card: #141414;
-    --card-hover: #1a1a1a;
-    --accent: #c8ff00;
-    --accent2: #ff4d6a;
-    --text: #e8e8e8;
-    --text-dim: #888;
-    --border: #2a2a2a;
-    --radius: 14px;
-    --shadow: 0 8px 32px rgba(0,0,0,.5);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); min-height:100vh; }
-  a { color: inherit; text-decoration: none; }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--card:#141414;--card2:#1a1a1a;--border:#2a2a2a;--text:#e0e0e0;--text2:#888;--primary:#c8ff00;--accent:#ff4d6a;--glass:rgba(20,20,20,.75)}
+html{font-size:14px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+a{color:var(--primary);text-decoration:none}
+img{max-width:100%;display:block}
+button{cursor:pointer;border:none;outline:none;font-family:inherit}
+input,select,textarea{font-family:inherit;outline:none}
 
-  nav { position:sticky; top:0; z-index:100; background:rgba(10,10,10,.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 32px; display:flex; align-items:center; justify-content:space-between; height:64px; }
-  .logo { font-size:22px; font-weight:800; letter-spacing:-.5px; display:flex; align-items:center; gap:8px; }
-  .logo span { color: var(--accent); }
-  .nav-links { display:flex; gap:24px; align-items:center; }
-  .nav-links a { font-size:14px; font-weight:500; color:var(--text-dim); transition:.2s; cursor:pointer; }
-  .nav-links a:hover, .nav-links a.active { color:var(--accent); }
-  .nav-right { display:flex; align-items:center; gap:16px; }
-  .cart-btn { position:relative; background:none; border:1px solid var(--border); color:var(--text); padding:8px 16px; border-radius:100px; cursor:pointer; font-size:14px; transition:.2s; display:flex; align-items:center; gap:6px; }
-  .cart-btn:hover { border-color:var(--accent); color:var(--accent); }
-  .cart-badge { background:var(--accent2); color:#fff; font-size:11px; font-weight:700; padding:2px 6px; border-radius:100px; min-width:18px; text-align:center; }
-  .admin-btn { background:var(--accent); color:#000; border:none; padding:8px 18px; border-radius:100px; cursor:pointer; font-size:13px; font-weight:700; transition:.2s; }
-  .admin-btn:hover { opacity:.85; }
+/* Toast */
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none}
+.toast{background:var(--card2);color:var(--text);padding:10px 24px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border);font-size:.9rem;opacity:0;animation:toastIn .3s ease forwards;pointer-events:auto;max-width:90vw;text-align:center}
+.toast.success{border-color:var(--primary);color:var(--primary)}
+.toast.error{border-color:var(--accent);color:var(--accent)}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(-10px)}}
 
-  .hero { padding:80px 32px 60px; text-align:center; position:relative; overflow:hidden; }
-  .hero::before { content:''; position:absolute; top:-200px; left:50%; transform:translateX(-50%); width:600px; height:600px; background:radial-gradient(circle, rgba(200,255,0,.08) 0%, transparent 70%); pointer-events:none; }
-  .hero h1 { font-size:clamp(36px,6vw,64px); font-weight:900; letter-spacing:-2px; line-height:1.1; }
-  .hero h1 em { font-style:normal; color:var(--accent); }
-  .hero p { color:var(--text-dim); font-size:16px; margin-top:16px; max-width:480px; margin-inline:auto; }
-  .hero-stats { display:flex; justify-content:center; gap:48px; margin-top:36px; }
-  .hero-stats div { text-align:center; }
-  .hero-stats .num { font-size:28px; font-weight:800; color:var(--accent); }
-  .hero-stats .label { font-size:12px; color:var(--text-dim); margin-top:2px; }
+/* Loading Spinner */
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;display:flex;align-items:center;justify-content:center}
+.loading-overlay .spinner{width:40px;height:40px;border-width:3px}
 
-  .filters { padding:0 32px 24px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  .filter-btn { background:var(--card); border:1px solid var(--border); color:var(--text-dim); padding:8px 20px; border-radius:100px; cursor:pointer; font-size:13px; transition:.2s; }
-  .filter-btn:hover, .filter-btn.active { background:var(--accent); color:#000; border-color:var(--accent); font-weight:600; }
+/* Sync Status */
+.sync-status{position:fixed;top:12px;right:12px;z-index:1000;display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--text2);background:var(--glass);backdrop-filter:blur(12px);padding:4px 10px;border-radius:20px;border:1px solid var(--border)}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#4caf50}
+.sync-dot.syncing{background:#ffc107;animation:pulse 1s infinite}
+.sync-dot.offline{background:var(--accent)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-  .section-title { font-size:24px; font-weight:800; padding:0 32px; margin-bottom:24px; display:flex; align-items:center; gap:10px; }
-  .section-title::before { content:''; width:4px; height:24px; background:var(--accent); border-radius:2px; }
-  .products { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:20px; padding:0 32px 60px; max-width:1400px; margin:0 auto; }
-  .product-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; transition:.3s; cursor:pointer; position:relative; }
-  .product-card:hover { transform:translateY(-4px); border-color:var(--accent); box-shadow:var(--shadow); }
-  .product-img { width:100%; aspect-ratio:1; object-fit:cover; background:#1a1a1a; display:block; }
-  .product-info { padding:16px; }
-  .product-brand { font-size:11px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
-  .product-name { font-size:15px; font-weight:600; margin-top:4px; line-height:1.4; }
-  .product-price { font-size:18px; font-weight:800; margin-top:8px; color:var(--accent); }
-  .product-price .original { font-size:13px; color:var(--text-dim); text-decoration:line-through; margin-left:8px; font-weight:400; }
-  .product-tags { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
-  .product-tags span { font-size:11px; background:rgba(200,255,0,.1); color:var(--accent); padding:3px 10px; border-radius:100px; }
-  .add-cart-btn { width:100%; padding:12px; background:var(--accent); color:#000; border:none; font-weight:700; font-size:14px; cursor:pointer; transition:.2s; margin-top:12px; border-radius:10px; }
-  .add-cart-btn:hover { opacity:.85; }
-  .add-cart-btn:disabled { background:var(--border); color:var(--text-dim); cursor:not-allowed; }
-  .empty-state { text-align:center; padding:80px 32px; color:var(--text-dim); }
-  .empty-state .icon { font-size:48px; margin-bottom:16px; }
-  .loading { text-align:center; padding:60px; color:var(--text-dim); }
-  .loading .spinner { display:inline-block; width:24px; height:24px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; margin-right:8px; vertical-align:middle; }
-  @keyframes spin { to { transform:rotate(360deg); } }
+/* Navbar */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:900;background:var(--glass);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:1.3rem;font-weight:800;color:var(--primary);letter-spacing:-0.5px}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:16px;align-items:center}
+.nav-links a{color:var(--text2);font-size:.85rem;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--primary)}
+.nav-cart{position:relative;background:none;color:var(--text);font-size:1.2rem;padding:8px}
+.nav-cart .badge{position:absolute;top:0;right:-2px;background:var(--accent);color:#fff;font-size:.6rem;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.nav-service{background:var(--card2);color:var(--text);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:.8rem;transition:all .2s}
+.nav-service:hover{border-color:var(--primary);color:var(--primary)}
+.nav-admin{background:none;color:var(--text2);font-size:1rem;padding:8px;transition:color .2s}
+.nav-admin:hover{color:var(--primary)}
 
-  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px; }
-  .modal-overlay.show { display:flex; }
-  .modal { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); max-width:560px; width:100%; max-height:90vh; overflow-y:auto; padding:32px; position:relative; }
-  .modal-wide { max-width:900px; }
-  .modal h2 { font-size:22px; font-weight:800; margin-bottom:24px; }
-  .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text-dim); font-size:24px; cursor:pointer; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition:.2s; }
-  .modal-close:hover { background:rgba(255,255,255,.1); color:var(--text); }
+/* Main Content */
+.main{padding-top:56px;min-height:100vh}
 
-  .cart-item { display:flex; gap:16px; padding:16px 0; border-bottom:1px solid var(--border); align-items:center; }
-  .cart-item img { width:72px; height:72px; object-fit:cover; border-radius:10px; background:#1a1a1a; }
-  .cart-item-info { flex:1; }
-  .cart-item-name { font-weight:600; font-size:14px; }
-  .cart-item-sku { font-size:12px; color:var(--text-dim); margin-top:2px; }
-  .cart-item-price { font-weight:700; color:var(--accent); margin-top:4px; }
-  .cart-qty { display:flex; align-items:center; gap:8px; }
-  .cart-qty button { width:28px; height:28px; border-radius:50%; border:1px solid var(--border); background:none; color:var(--text); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:.2s; }
-  .cart-qty button:hover { border-color:var(--accent); color:var(--accent); }
-  .cart-qty span { font-weight:600; min-width:20px; text-align:center; }
-  .cart-remove { background:none; border:none; color:var(--accent2); cursor:pointer; font-size:18px; padding:4px; }
-  .cart-total { display:flex; justify-content:space-between; align-items:center; padding:20px 0; border-top:2px solid var(--border); margin-top:8px; }
-  .cart-total .label { font-size:16px; color:var(--text-dim); }
-  .cart-total .amount { font-size:28px; font-weight:800; color:var(--accent); }
-  .checkout-btn { width:100%; padding:16px; background:var(--accent); color:#000; border:none; font-weight:800; font-size:16px; cursor:pointer; border-radius:12px; margin-top:16px; transition:.2s; }
-  .checkout-btn:hover { opacity:.85; }
-  .checkout-btn:disabled { background:var(--border); color:var(--text-dim); cursor:not-allowed; }
+/* Banner */
+.banner{width:100%;max-height:400px;overflow:hidden;position:relative}
+.banner-img{width:100%;height:400px;object-fit:cover}
+.banner-placeholder{width:100%;height:300px;background:linear-gradient(135deg,#141414,#1a1a1a);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.banner-placeholder h1{font-size:2.4rem;font-weight:900;color:var(--primary);letter-spacing:-1px}
+.banner-placeholder p{color:var(--text2);font-size:1rem}
+.banner-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.banner-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.2s}
+.banner-dots span.active{background:var(--primary);width:24px;border-radius:4px}
 
-  .payment-methods { display:flex; gap:12px; margin-bottom:24px; }
-  .pay-method { flex:1; padding:16px; border:2px solid var(--border); border-radius:12px; text-align:center; cursor:pointer; transition:.2s; }
-  .pay-method:hover, .pay-method.selected { border-color:var(--accent); }
-  .pay-method .icon { font-size:32px; margin-bottom:6px; }
-  .pay-method .name { font-size:14px; font-weight:600; }
-  .qr-area { text-align:center; padding:24px; background:#fff; border-radius:16px; margin:16px 0; }
-  .qr-area canvas { max-width:220px; }
-  .qr-hint { font-size:13px; color:var(--text-dim); text-align:center; margin-top:8px; }
-  .pay-amount { text-align:center; font-size:36px; font-weight:900; color:var(--accent); margin:16px 0; }
-  .pay-amount::before { content:'¥'; font-size:24px; margin-right:2px; }
-  .order-info { background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:12px; padding:16px; margin:16px 0; }
-  .order-info .row { display:flex; justify-content:space-between; padding:6px 0; font-size:13px; }
-  .order-info .row .label { color:var(--text-dim); }
+/* Shop Info */
+.shop-info{text-align:center;padding:32px 16px}
+.shop-info h2{font-size:1.5rem;font-weight:700;margin-bottom:8px}
+.shop-info p{color:var(--text2);font-size:.9rem;margin-bottom:8px}
+.shop-info .fans{color:var(--primary);font-size:.85rem}
 
-  .admin-tabs { display:flex; gap:4px; margin-bottom:24px; background:rgba(255,255,255,.03); border-radius:10px; padding:4px; }
-  .admin-tab { flex:1; padding:10px; text-align:center; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-dim); transition:.2s; }
-  .admin-tab.active { background:var(--accent); color:#000; }
-  .form-group { margin-bottom:16px; }
-  .form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--text-dim); }
-  .form-group input, .form-group select, .form-group textarea { width:100%; padding:12px 14px; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:14px; outline:none; transition:.2s; }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--accent); }
-  .form-group textarea { resize:vertical; min-height:80px; }
-  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .img-upload-area { border:2px dashed var(--border); border-radius:12px; padding:32px; text-align:center; cursor:pointer; transition:.2s; position:relative; overflow:hidden; }
-  .img-upload-area:hover { border-color:var(--accent); }
-  .img-upload-area input { position:absolute; inset:0; opacity:0; cursor:pointer; }
-  .img-upload-area .icon { font-size:36px; margin-bottom:8px; }
-  .img-upload-area p { font-size:13px; color:var(--text-dim); }
-  .img-preview { width:100%; max-height:200px; object-fit:contain; border-radius:8px; margin-top:12px; }
-  .sku-manager { background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:8px; }
-  .sku-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-  .sku-row input { flex:1; padding:10px 12px; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px; outline:none; }
-  .sku-row input:focus { border-color:var(--accent); }
-  .sku-remove { background:none; border:none; color:var(--accent2); cursor:pointer; font-size:18px; padding:4px 8px; }
-  .add-sku-btn { background:none; border:1px dashed var(--border); color:var(--accent); padding:10px; width:100%; border-radius:8px; cursor:pointer; font-size:13px; margin-top:8px; transition:.2s; }
-  .add-sku-btn:hover { border-color:var(--accent); }
-  .submit-btn { width:100%; padding:14px; background:var(--accent); color:#000; border:none; font-weight:700; font-size:15px; cursor:pointer; border-radius:12px; transition:.2s; margin-top:8px; }
-  .submit-btn:hover { opacity:.85; }
-  .submit-btn:disabled { background:var(--border); color:var(--text-dim); cursor:not-allowed; }
+/* Coupons Section */
+.coupons-section{padding:0 16px 24px;max-width:1200px;margin:0 auto}
+.coupons-section h3{font-size:1rem;margin-bottom:12px;color:var(--text2)}
+.coupons-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+.coupon-card{flex:0 0 260px;background:linear-gradient(135deg,#1a1a1a,#222);border:1px dashed var(--primary);border-radius:12px;padding:16px;position:relative;overflow:hidden}
+.coupon-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary)}
+.coupon-card .coupon-value{font-size:1.8rem;font-weight:900;color:var(--primary)}
+.coupon-card .coupon-value small{font-size:.8rem;font-weight:400}
+.coupon-card .coupon-name{font-size:.9rem;color:var(--text);margin:4px 0}
+.coupon-card .coupon-cond{font-size:.75rem;color:var(--text2)}
+.coupon-card .coupon-btn{margin-top:10px;background:var(--primary);color:#000;padding:6px 16px;border-radius:20px;font-size:.8rem;font-weight:700;transition:all .2s}
+.coupon-card .coupon-btn:hover{transform:scale(1.05)}
+.coupon-card .coupon-btn:disabled{background:#333;color:#666;cursor:default;transform:none}
 
-  .admin-product { display:flex; gap:16px; padding:16px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:12px; margin-bottom:12px; align-items:center; }
-  .admin-product img { width:64px; height:64px; object-fit:cover; border-radius:8px; background:#1a1a1a; }
-  .admin-product-info { flex:1; }
-  .admin-product-name { font-weight:600; font-size:14px; }
-  .admin-product-meta { font-size:12px; color:var(--text-dim); margin-top:4px; }
-  .admin-actions { display:flex; gap:8px; }
-  .admin-actions button { padding:6px 14px; border-radius:8px; border:1px solid var(--border); background:none; color:var(--text-dim); cursor:pointer; font-size:12px; transition:.2s; }
-  .admin-actions button:hover { border-color:var(--accent); color:var(--accent); }
-  .admin-actions .danger:hover { border-color:var(--accent2); color:var(--accent2); }
+/* Category Filter */
+.category-bar{padding:16px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:1200px;margin:0 auto}
+.cat-btn{flex:0 0 auto;background:var(--card);color:var(--text2);border:1px solid var(--border);padding:8px 20px;border-radius:24px;font-size:.85rem;transition:all .2s;white-space:nowrap}
+.cat-btn:hover{border-color:var(--primary);color:var(--text)}
+.cat-btn.active{background:var(--primary);color:#000;border-color:var(--primary);font-weight:700}
 
-  .detail-layout { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
-  .detail-img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:12px; background:#1a1a1a; }
-  .detail-brand { font-size:12px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
-  .detail-name { font-size:22px; font-weight:800; margin-top:8px; }
-  .detail-price { font-size:28px; font-weight:900; color:var(--accent); margin-top:12px; }
-  .detail-desc { font-size:14px; color:var(--text-dim); line-height:1.7; margin-top:16px; }
-  .sku-selector { margin-top:20px; }
-  .sku-selector label { font-size:13px; font-weight:600; color:var(--text-dim); display:block; margin-bottom:8px; }
-  .sku-options { display:flex; gap:8px; flex-wrap:wrap; }
-  .sku-opt { padding:8px 18px; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; transition:.2s; }
-  .sku-opt:hover { border-color:var(--accent); }
-  .sku-opt.selected { border-color:var(--accent); background:var(--accent); color:#000; font-weight:600; }
-  .sku-opt.out { opacity:.3; cursor:not-allowed; text-decoration:line-through; }
+/* Product Grid */
+.products{max-width:1200px;margin:0 auto;padding:0 16px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.product-card{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);transition:all .3s ease;cursor:pointer}
+.product-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 12px 32px rgba(200,255,0,.08)}
+.product-card .card-img{width:100%;aspect-ratio:1;object-fit:cover;background:#1a1a1a}
+.product-card .card-body{padding:14px}
+.product-card .card-brand{font-size:.7rem;color:var(--primary);text-transform:uppercase;font-weight:700;letter-spacing:.5px}
+.product-card .card-name{font-size:.95rem;font-weight:600;margin:4px 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.product-card .card-price{display:flex;align-items:baseline;gap:8px}
+.product-card .price-now{font-size:1.2rem;font-weight:800;color:var(--accent)}
+.product-card .price-original{font-size:.8rem;color:var(--text2);text-decoration:line-through}
+.product-card .card-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.product-card .tag{font-size:.65rem;padding:2px 8px;border-radius:10px;background:var(--card2);color:var(--text2);border:1px solid var(--border)}
+.product-card .tag.sold-out{background:rgba(255,77,106,.15);color:var(--accent);border-color:rgba(255,77,106,.3)}
+.product-card .tag.low-stock{background:rgba(255,193,7,.15);color:#ffc107;border-color:rgba(255,193,7,.3)}
 
-  .toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%); background:var(--accent); color:#000; padding:14px 28px; border-radius:100px; font-weight:700; font-size:14px; z-index:999; opacity:0; transition:.3s; pointer-events:none; }
-  .toast.show { opacity:1; pointer-events:auto; }
+/* Empty State */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text2)}
+.empty-state .empty-icon{font-size:3rem;margin-bottom:16px}
+.empty-state p{font-size:.95rem}
 
-  .sync-badge { font-size:11px; color:var(--text-dim); display:flex; align-items:center; gap:4px; }
-  .sync-badge .dot { width:6px; height:6px; border-radius:50%; }
-  .sync-badge .dot.ok { background:#4ade80; }
-  .sync-badge .dot.syncing { background:var(--accent); animation:pulse 1s infinite; }
-  .sync-badge .dot.err { background:var(--accent2); }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+/* Modals */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px;opacity:0;transition:opacity .25s}
+.modal-overlay.show{display:flex;opacity:1}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;transform:scale(.95);transition:transform .25s}
+.modal-overlay.show .modal{transform:scale(1)}
+.modal-close{position:absolute;top:12px;right:12px;background:var(--card2);color:var(--text2);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;z-index:2;border:1px solid var(--border);transition:all .2s}
+.modal-close:hover{color:var(--accent);border-color:var(--accent)}
+.modal-header{padding:20px 20px 0;font-size:1.1rem;font-weight:700}
+.modal-body{padding:20px}
+.modal-footer{padding:0 20px 20px}
+.modal-wide{max-width:640px}
 
-  ::-webkit-scrollbar { width:6px; }
-  ::-webkit-scrollbar-track { background:transparent; }
-  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
-  ::-webkit-scrollbar-thumb:hover { background:#444; }
+/* Product Detail Modal */
+.pd-gallery{position:relative}
+.pd-main-img{width:100%;aspect-ratio:1;object-fit:cover;background:#1a1a1a;border-radius:16px 16px 0 0}
+.pd-thumbs{display:flex;gap:8px;padding:12px 20px;overflow-x:auto}
+.pd-thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid transparent;transition:.2s;flex-shrink:0}
+.pd-thumb.active{border-color:var(--primary)}
+.pd-info{padding:20px}
+.pd-brand{font-size:.75rem;color:var(--primary);text-transform:uppercase;font-weight:700;letter-spacing:.5px}
+.pd-name{font-size:1.3rem;font-weight:700;margin:6px 0}
+.pd-price-row{display:flex;align-items:baseline;gap:10px;margin:12px 0}
+.pd-price{font-size:1.6rem;font-weight:900;color:var(--accent)}
+.pd-original{font-size:1rem;color:var(--text2);text-decoration:line-through}
+.pd-desc{color:var(--text2);font-size:.85rem;line-height:1.6;margin-bottom:16px}
+.pd-sku-section{margin-bottom:16px}
+.pd-sku-label{font-size:.85rem;color:var(--text2);margin-bottom:8px}
+.pd-sku-options{display:flex;flex-wrap:wrap;gap:8px}
+.pd-sku-btn{background:var(--card2);color:var(--text);border:1px solid var(--border);padding:8px 16px;border-radius:10px;font-size:.8rem;transition:all .2s}
+.pd-sku-btn:hover{border-color:var(--primary)}
+.pd-sku-btn.active{background:var(--primary);color:#000;border-color:var(--primary);font-weight:700}
+.pd-sku-btn.out{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.pd-add-cart{width:100%;background:var(--primary);color:#000;padding:14px;border-radius:14px;font-size:1rem;font-weight:700;transition:all .2s;margin-top:12px}
+.pd-add-cart:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(200,255,0,.3)}
+.pd-add-cart:disabled{background:#333;color:#666;cursor:not-allowed;transform:none;box-shadow:none}
 
-  @media(max-width:768px) {
-    nav { padding:0 16px; }
-    .hero { padding:48px 16px 40px; }
-    .hero-stats { gap:24px; }
-    .filters { padding:0 16px 20px; }
-    .products { padding:0 16px 40px; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:12px; }
-    .detail-layout { grid-template-columns:1fr; }
-    .modal { padding:20px; margin:8px; }
-    .form-row { grid-template-columns:1fr; }
-    .payment-methods { flex-direction:column; }
-  }
+/* Cart Modal */
+.cart-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:center}
+.cart-item img{width:64px;height:64px;border-radius:10px;object-fit:cover;background:#1a1a1a;flex-shrink:0}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cart-item-spec{font-size:.75rem;color:var(--text2);margin-top:2px}
+.cart-item-price{font-size:.95rem;font-weight:700;color:var(--accent);margin-top:4px}
+.cart-qty{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.cart-qty button{width:28px;height:28px;border-radius:50%;background:var(--card2);color:var(--text);border:1px solid var(--border);font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+.cart-qty button:hover{border-color:var(--primary);color:var(--primary)}
+.cart-qty span{font-size:.9rem;min-width:20px;text-align:center;font-weight:600}
+.cart-del{background:none;color:var(--text2);font-size:1.1rem;padding:8px;transition:color .2s}
+.cart-del:hover{color:var(--accent)}
+.cart-total{display:flex;justify-content:space-between;align-items:center;padding:16px 0;font-size:1.1rem;font-weight:700}
+.cart-total .amount{color:var(--accent);font-size:1.3rem}
+.cart-coupon-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.cart-coupon-row select{flex:1;background:var(--card2);color:var(--text);border:1px solid var(--border);padding:8px 12px;border-radius:10px;font-size:.85rem}
+.btn-checkout{width:100%;background:var(--primary);color:#000;padding:14px;border-radius:14px;font-size:1rem;font-weight:700;transition:all .2s}
+.btn-checkout:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(200,255,0,.3)}
+
+/* Address Modal */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.85rem;color:var(--text2);margin-bottom:6px}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:var(--card2);color:var(--text);border:1px solid var(--border);padding:10px 14px;border-radius:10px;font-size:.9rem;transition:border-color .2s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--primary)}
+.form-group textarea{resize:vertical;min-height:60px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-primary{width:100%;background:var(--primary);color:#000;padding:14px;border-radius:14px;font-size:1rem;font-weight:700;transition:all .2s}
+.btn-primary:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(200,255,0,.3)}
+.btn-secondary{width:100%;background:var(--card2);color:var(--text);border:1px solid var(--border);padding:14px;border-radius:14px;font-size:1rem;font-weight:600;transition:all .2s}
+.btn-secondary:hover{border-color:var(--primary)}
+
+/* Payment Modal */
+.payment-methods{display:flex;gap:12px;margin-bottom:16px}
+.payment-method{flex:1;background:var(--card2);border:2px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all .2s}
+.payment-method.active{border-color:var(--primary);background:rgba(200,255,0,.05)}
+.payment-method .pay-icon{font-size:1.8rem;margin-bottom:6px}
+.payment-method .pay-name{font-size:.85rem;color:var(--text)}
+.qr-container{text-align:center;padding:20px}
+.qr-container img{max-width:220px;margin:0 auto;border-radius:12px;border:2px solid var(--border)}
+.qr-container p{color:var(--text2);font-size:.8rem;margin-top:8px}
+.payment-amount{text-align:center;font-size:1.6rem;font-weight:900;color:var(--accent);margin-bottom:16px}
+.payment-amount small{font-size:.85rem;color:var(--text2);display:block;margin-top:4px;font-weight:400}
+
+/* Admin Panel */
+.admin-panel{position:fixed;inset:0;background:var(--bg);z-index:800;display:none;overflow-y:auto;padding-top:56px}
+.admin-panel.show{display:block}
+.admin-header{display:flex;gap:12px;padding:16px;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap}
+.admin-tab{background:var(--card);color:var(--text2);border:1px solid var(--border);padding:8px 20px;border-radius:10px;font-size:.85rem;white-space:nowrap;transition:all .2s}
+.admin-tab.active{background:var(--primary);color:#000;border-color:var(--primary);font-weight:700}
+.admin-content{max-width:960px;margin:0 auto;padding:20px 16px}
+.admin-section{display:none}
+.admin-section.show{display:block}
+.admin-section h3{font-size:1.2rem;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+
+/* Admin Forms */
+.admin-form{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px}
+.admin-form h4{font-size:1rem;margin-bottom:16px;color:var(--primary)}
+
+/* Admin Tables */
+.admin-table{width:100%;border-collapse:collapse;margin-top:12px}
+.admin-table th,.admin-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem}
+.admin-table th{color:var(--text2);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+.admin-table tr:hover td{background:rgba(200,255,0,.02)}
+.admin-table img{width:40px;height:40px;border-radius:8px;object-fit:cover}
+.admin-table .actions button{background:var(--card2);color:var(--text);border:1px solid var(--border);padding:4px 12px;border-radius:6px;font-size:.75rem;margin-right:4px;transition:all .2s}
+.admin-table .actions button:hover{border-color:var(--primary);color:var(--primary)}
+.admin-table .actions button.danger:hover{border-color:var(--accent);color:var(--accent)}
+.status-badge{padding:3px 10px;border-radius:12px;font-size:.7rem;font-weight:600}
+.status-badge.pending{background:rgba(255,193,7,.15);color:#ffc107}
+.status-badge.shipped{background:rgba(33,150,243,.15);color:#42a5f5}
+.status-badge.done{background:rgba(76,175,80,.15);color:#4caf50}
+.stock-warn{color:var(--accent);font-weight:700}
+
+/* SKU Builder */
+.sku-builder{margin-top:12px}
+.sku-row{display:grid;grid-template-columns:1fr 80px 1fr 40px;gap:8px;margin-bottom:8px;align-items:center}
+.sku-row input{background:var(--card2);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:8px;font-size:.8rem}
+.sku-row input:focus{border-color:var(--primary)}
+.sku-row .del-sku{background:none;color:var(--text2);font-size:1.1rem;padding:4px;text-align:center}
+.sku-row .del-sku:hover{color:var(--accent)}
+.add-sku-btn{background:var(--card2);color:var(--primary);border:1px dashed var(--primary);padding:8px 16px;border-radius:10px;font-size:.8rem;margin-top:8px;transition:all .2s}
+.add-sku-btn:hover{background:rgba(200,255,0,.1)}
+
+/* Image Upload */
+.img-upload-area{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;color:var(--text2);cursor:pointer;transition:all .2s;position:relative}
+.img-upload-area:hover{border-color:var(--primary);color:var(--primary)}
+.img-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.img-preview-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.img-preview-item{position:relative;width:72px;height:72px}
+.img-preview-item img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+.img-preview-item .remove-img{position:absolute;top:-6px;right:-6px;background:var(--accent);color:#fff;width:18px;height:18px;border-radius:50%;font-size:.65rem;display:flex;align-items:center;justify-content:center}
+
+/* Admin Login */
+.admin-login{max-width:380px;margin:80px auto;padding:32px;background:var(--card);border:1px solid var(--border);border-radius:20px;text-align:center}
+.admin-login h2{color:var(--primary);margin-bottom:24px}
+.admin-login .form-group{text-align:left}
+
+/* Mobile Bottom Cart Bar */
+.mobile-cart-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--glass);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:10px 16px;z-index:800;align-items:center;justify-content:space-between}
+.mobile-cart-bar .mcb-info{display:flex;align-items:center;gap:10px}
+.mobile-cart-bar .mcb-count{background:var(--accent);color:#fff;font-size:.7rem;padding:2px 8px;border-radius:10px;font-weight:700}
+.mobile-cart-bar .mcb-total{font-size:1.1rem;font-weight:800;color:var(--accent)}
+.mobile-cart-bar .mcb-btn{background:var(--primary);color:#000;padding:10px 24px;border-radius:12px;font-weight:700;font-size:.9rem}
+
+/* Service Modal */
+.service-qr{text-align:center;padding:20px}
+.service-qr img{max-width:200px;margin:0 auto;border-radius:12px;border:2px solid var(--border)}
+.service-qr p{color:var(--text2);font-size:.85rem;margin-top:12px}
+
+/* Order Success */
+.order-success{text-align:center;padding:40px 20px}
+.order-success .success-icon{font-size:4rem;margin-bottom:16px}
+.order-success h3{font-size:1.3rem;margin-bottom:8px;color:var(--primary)}
+.order-success p{color:var(--text2);font-size:.9rem}
+
+/* Responsive */
+@media(max-width:768px){
+  .products{grid-template-columns:repeat(2,1fr);gap:10px}
+  .product-card .card-body{padding:10px}
+  .product-card .card-name{font-size:.85rem}
+  .product-card .price-now{font-size:1rem}
+  .mobile-cart-bar{display:flex}
+  .nav-links a:not(.nav-admin){display:none}
+  .modal{border-radius:20px 20px 0 0;max-height:85vh;margin-top:auto}
+  .banner-placeholder{height:200px}
+  .banner-placeholder h1{font-size:1.6rem}
+  .admin-table{font-size:.7rem}
+  .admin-table th,.admin-table td{padding:6px 8px}
+  .sku-row{grid-template-columns:1fr 60px 1fr 36px;gap:4px}
+  .coupon-card{flex:0 0 220px}
+}
+@media(max-width:380px){
+  .products{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo">🔥 <span>Drip</span> Vault</div>
+<!-- Sync Status -->
+<div class="sync-status" id="syncStatus">
+  <div class="sync-dot" id="syncDot"></div>
+  <span id="syncText">已连接</span>
+</div>
+
+<!-- Toast Container -->
+<div id="toast"></div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay" style="display:none"><div class="spinner"></div></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-logo" id="navLogo">DRIP<span>VAULT</span></div>
   <div class="nav-links">
-    <a class="active" onclick="showPage('home')">首页</a>
-    <a onclick="showPage('home'); scrollToProducts()">单品</a>
-  </div>
-  <div class="nav-right">
-    <div class="sync-badge"><div class="dot ok" id="syncDot"></div><span id="syncText">已连接</span></div>
-    <button class="cart-btn" onclick="openCart()">🛒 <span class="cart-badge" id="cartBadge">0</span></button>
-    <button class="admin-btn" onclick="openAdmin()">⚙ 管理</button>
+    <a href="#" class="active" onclick="scrollToTop()">首页</a>
+    <a href="#" onclick="scrollToProducts()">商品</a>
+    <button class="nav-cart" onclick="openCart()">
+      🛒 <span class="badge" id="cartBadge">0</span>
+    </button>
+    <button class="nav-service" onclick="openService()">💬 客服</button>
+    <button class="nav-admin" onclick="openAdminLogin()">⚙</button>
   </div>
 </nav>
 
-<div class="hero">
-  <h1>精选<em>潮流</em>单品<br>限量发售</h1>
-  <p>每一件单品都经过严格鉴定，正品保障，潮流前沿</p>
-  <div class="hero-stats">
-    <div><div class="num" id="statProducts">0</div><div class="label">在售单品</div></div>
-    <div><div class="num" id="statBrands">0</div><div class="label">合作品牌</div></div>
-    <div><div class="num">100%</div><div class="label">正品保障</div></div>
+<!-- Main Content -->
+<div class="main" id="mainContent">
+  <!-- Banner -->
+  <div class="banner" id="bannerSection">
+    <div class="banner-placeholder" id="bannerPlaceholder">
+      <h1>DRIP VAULT</h1>
+      <p>精选潮流单品 · 限量发售</p>
+    </div>
   </div>
+
+  <!-- Shop Info -->
+  <div class="shop-info">
+    <h2 id="shopName">Drip Vault</h2>
+    <p id="shopSlogan">精选潮流单品，限量发售</p>
+    <div class="fans">🔥 1,286 粉丝</div>
+  </div>
+
+  <!-- Coupons -->
+  <div class="coupons-section" id="couponsSection">
+    <h3>🎫 优惠券</h3>
+    <div class="coupons-row" id="couponsRow"></div>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="category-bar" id="categoryBar">
+    <button class="cat-btn active" data-cat="全部">全部</button>
+    <button class="cat-btn" data-cat="鞋款">鞋款</button>
+    <button class="cat-btn" data-cat="上装">上装</button>
+    <button class="cat-btn" data-cat="下装">下装</button>
+    <button class="cat-btn" data-cat="配饰">配饰</button>
+    <button class="cat-btn" data-cat="包袋">包袋</button>
+    <button class="cat-btn" data-cat="限定">限定</button>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="products" id="productsGrid"></div>
 </div>
 
-<div class="filters" id="filters"></div>
-<div class="section-title" style="max-width:1400px;margin:0 auto;">热门单品</div>
-<div class="products" id="productGrid"><div class="loading" style="grid-column:1/-1"><span class="spinner"></span>加载中...</div></div>
+<!-- Mobile Bottom Cart Bar -->
+<div class="mobile-cart-bar" id="mobileCartBar">
+  <div class="mcb-info">
+    <span>🛒</span>
+    <span class="mcb-count" id="mcbCount">0</span>
+    <span class="mcb-total" id="mcbTotal">¥0</span>
+  </div>
+  <button class="mcb-btn" onclick="openCart()">去购物车</button>
+</div>
 
-<!-- DETAIL -->
-<div class="modal-overlay" id="detailModal">
-  <div class="modal modal-wide" style="position:relative">
-    <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
-    <div class="detail-layout">
-      <div><img class="detail-img" id="detailImg" src=""></div>
-      <div>
-        <div class="detail-brand" id="detailBrand"></div>
-        <div class="detail-name" id="detailName"></div>
-        <div class="detail-price" id="detailPrice"></div>
-        <div class="detail-desc" id="detailDesc"></div>
-        <div class="sku-selector" id="skuSelector"></div>
-        <button class="add-cart-btn" id="detailAddBtn" onclick="addFromDetail()" style="margin-top:20px">加入购物车</button>
+<!-- ==================== MODALS ==================== -->
+
+<!-- Product Detail Modal -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('productModal')">✕</button>
+    <div class="pd-gallery">
+      <img class="pd-main-img" id="pdMainImg" src="" alt="">
+      <div class="pd-thumbs" id="pdThumbs"></div>
+    </div>
+    <div class="pd-info">
+      <div class="pd-brand" id="pdBrand"></div>
+      <div class="pd-name" id="pdName"></div>
+      <div class="pd-price-row">
+        <span class="pd-price" id="pdPrice"></span>
+        <span class="pd-original" id="pdOriginal"></span>
       </div>
+      <div class="pd-desc" id="pdDesc"></div>
+      <div class="pd-sku-section" id="pdSkuSection"></div>
+      <button class="pd-add-cart" id="pdAddCart" onclick="addToCartFromDetail()">加入购物车</button>
     </div>
   </div>
 </div>
 
-<!-- CART -->
+<!-- Cart Modal -->
 <div class="modal-overlay" id="cartModal">
-  <div class="modal" style="position:relative">
+  <div class="modal" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeModal('cartModal')">✕</button>
-    <h2>🛒 购物车</h2>
-    <div id="cartItems"></div>
-    <div class="cart-total"><span class="label">合计</span><span class="amount" id="cartTotal">0</span></div>
-    <button class="checkout-btn" id="checkoutBtn" onclick="openPayment()">去结算</button>
+    <div class="modal-header">🛒 购物车</div>
+    <div class="modal-body" id="cartBody"></div>
+    <div class="modal-footer" id="cartFooter"></div>
   </div>
 </div>
 
-<!-- PAYMENT -->
-<div class="modal-overlay" id="payModal">
-  <div class="modal" style="position:relative">
-    <button class="modal-close" onclick="closeModal('payModal')">✕</button>
-    <h2>💳 收银台</h2>
-    <div class="pay-amount" id="payAmount">0</div>
-    <div class="order-info" id="orderInfo"></div>
-    <div class="payment-methods">
-      <div class="pay-method selected" onclick="selectPay('wechat', this)"><div class="icon">💚</div><div class="name">微信支付</div></div>
-      <div class="pay-method" onclick="selectPay('alipay', this)"><div class="icon">🔵</div><div class="name">支付宝</div></div>
+<!-- Address Modal -->
+<div class="modal-overlay" id="addressModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('addressModal')">✕</button>
+    <div class="modal-header">📦 收货地址</div>
+    <div class="modal-body">
+      <div class="form-group"><label>收货人</label><input id="addrName" placeholder="请输入收货人姓名"></div>
+      <div class="form-group"><label>手机号</label><input id="addrPhone" placeholder="请输入手机号" type="tel"></div>
+      <div class="form-group"><label>省/市/区</label><input id="addrRegion" placeholder="如：北京市朝阳区"></div>
+      <div class="form-group"><label>详细地址</label><textarea id="addrDetail" placeholder="请输入详细地址（街道、楼栋、门牌号）"></textarea></div>
+      <button class="btn-primary" onclick="confirmAddress()">确认并支付</button>
     </div>
-    <div class="qr-area" id="qrArea"><img src="images/wechat.png" style="max-width:220px;border-radius:12px" alt="收款码"></div>
-    <p class="qr-hint" id="qrHint">请使用微信扫一扫完成支付</p>
-    <button class="submit-btn" onclick="confirmPay()" style="margin-top:16px">✅ 我已完成支付</button>
   </div>
 </div>
 
-<!-- ADMIN LOGIN -->
-<div class="modal-overlay" id="loginModal">
-  <div class="modal" style="position:relative;max-width:420px">
-    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
-    <h2>🔐 管理员登录</h2>
-    <div class="form-group">
-      <label>管理密码</label>
-      <input type="password" id="loginPwd" placeholder="输入管理密码">
-    </div>
-    <div class="form-group">
-      <label>GitHub Token <span style="color:var(--text-dim);font-weight:400">（用于云端同步）</span></label>
-      <input type="password" id="loginToken" placeholder="ghp_xxxx..." onkeydown="if(event.key==='Enter')doLogin()">
-      <p style="font-size:11px;color:var(--text-dim);margin-top:6px">Token 需要 repo 权限，<a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--accent)">点此创建</a></p>
-    </div>
-    <button class="submit-btn" onclick="doLogin()">登录</button>
+<!-- Payment Modal -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('paymentModal')">✕</button>
+    <div class="modal-header">💳 支付</div>
+    <div class="modal-body" id="paymentBody"></div>
   </div>
 </div>
 
-<!-- ADMIN -->
-<div class="modal-overlay" id="adminModal">
-  <div class="modal modal-wide" style="position:relative">
-    <button class="modal-close" onclick="closeModal('adminModal')">✕</button>
-    <h2>⚙ 后台管理 <span style="font-size:12px;color:var(--text-dim);font-weight:400;margin-left:8px">云端同步</span></h2>
-    <div class="admin-tabs">
-      <div class="admin-tab active" onclick="switchAdminTab('add', this)">上架单品</div>
-      <div class="admin-tab" onclick="switchAdminTab('list', this)">商品管理</div>
-      <div class="admin-tab" onclick="switchAdminTab('orders', this)">订单记录</div>
+<!-- Order Success Modal -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('successModal')">✕</button>
+    <div class="order-success" id="successBody"></div>
+  </div>
+</div>
+
+<!-- Service Modal -->
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('serviceModal')">✕</button>
+    <div class="modal-header">💬 联系客服</div>
+    <div class="service-qr" id="serviceBody">
+      <p>长按或扫描下方二维码添加客服微信</p>
+      <img id="serviceQR" src="images/wechat.png" alt="客服微信" onerror="this.src='';this.alt='暂未配置客服二维码'">
+      <p>客服在线时间：10:00 - 22:00</p>
     </div>
-    <div id="adminAdd">
-      <div class="img-upload-area" id="imgUploadArea">
-        <input type="file" accept="image/*" id="imgInput" onchange="handleImgUpload(event)">
-        <div class="icon">📸</div>
-        <p>点击或拖拽上传商品图片</p>
-        <img class="img-preview" id="imgPreview" style="display:none">
+  </div>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('adminLoginModal')">✕</button>
+    <div class="admin-login">
+      <h2>⚙ 管理后台</h2>
+      <div class="form-group"><label>管理密码</label><input id="adminPass" type="password" placeholder="请输入管理密码"></div>
+      <div class="form-group"><label>GitHub Token</label><input id="adminToken" type="password" placeholder="请输入 GitHub Personal Access Token"></div>
+      <button class="btn-primary" onclick="adminLogin()">登录</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor:pointer" onclick="closeAdmin()">← DRIP<span>VAULT</span></div>
+    <div class="nav-links">
+      <button class="nav-service" onclick="closeAdmin()">退出管理</button>
+    </div>
+  </nav>
+  <div class="admin-header" id="adminTabs">
+    <button class="admin-tab active" data-tab="shop" onclick="switchAdminTab('shop')">店铺管理</button>
+    <button class="admin-tab" data-tab="products" onclick="switchAdminTab('products')">商品管理</button>
+    <button class="admin-tab" data-tab="orders" onclick="switchAdminTab('orders')">订单管理</button>
+    <button class="admin-tab" data-tab="coupons" onclick="switchAdminTab('coupons')">优惠券管理</button>
+    <button class="admin-tab" data-tab="reviews" onclick="switchAdminTab('reviews')">评价管理</button>
+    <button class="admin-tab" data-tab="stock" onclick="switchAdminTab('stock')">库存预警</button>
+  </div>
+  <div class="admin-content">
+    <!-- Shop Management -->
+    <div class="admin-section show" id="sec-shop">
+      <h3>店铺设置</h3>
+      <div class="admin-form">
+        <div class="form-group"><label>店铺名称</label><input id="shopNameInput" placeholder="店铺名称"></div>
+        <div class="form-group"><label>店铺简介</label><textarea id="shopSloganInput" placeholder="店铺简介"></textarea></div>
+        <div class="form-group"><label>Logo 图片URL</label><input id="shopLogoInput" placeholder="https://..."></div>
+        <div class="form-group"><label>Banner 图片URL</label><input id="shopBannerInput" placeholder="https://..."></div>
+        <div class="form-group"><label>客服微信二维码URL</label><input id="shopServiceQRInput" placeholder="https://..."></div>
+        <button class="btn-primary" onclick="saveShop()">保存设置</button>
       </div>
-      <div class="form-row" style="margin-top:16px">
-        <div class="form-group"><label>品牌</label><input type="text" id="pBrand" placeholder="如：Nike, Supreme..."></div>
-        <div class="form-group"><label>分类</label><select id="pCategory"><option value="鞋款">鞋款</option><option value="上装">上装</option><option value="下装">下装</option><option value="配饰">配饰</option><option value="包袋">包袋</option><option value="限定">限定</option></select></div>
-      </div>
-      <div class="form-group"><label>商品名称</label><input type="text" id="pName" placeholder="输入商品名称"></div>
-      <div class="form-row">
-        <div class="form-group"><label>售价 (¥)</label><input type="number" id="pPrice" placeholder="0.00"></div>
-        <div class="form-group"><label>原价 (¥) <span style="color:var(--text-dim);font-weight:400">可选</span></label><input type="number" id="pOriginal" placeholder="0.00"></div>
-      </div>
-      <div class="form-group"><label>商品描述</label><textarea id="pDesc" placeholder="描述商品特点、材质、故事..."></textarea></div>
-      <div class="form-group">
-        <label>SKU 管理 <span style="color:var(--text-dim);font-weight:400">（规格 / 库存）</span></label>
-        <div class="sku-manager" id="skuManager">
-          <div class="sku-row"><input type="text" placeholder="规格（如：黑色 / 42码）" class="sku-spec"><input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none"><button class="sku-remove" onclick="removeSkuRow(this)">✕</button></div>
+    </div>
+    <!-- Product Management -->
+    <div class="admin-section" id="sec-products">
+      <h3>商品管理</h3>
+      <div class="admin-form" id="productForm">
+        <h4 id="productFormTitle">添加商品</h4>
+        <input type="hidden" id="editProductId">
+        <div class="form-row">
+          <div class="form-group"><label>品牌</label><input id="pBrand" placeholder="如 Nike"></div>
+          <div class="form-group"><label>分类</label>
+            <select id="pCategory"><option>鞋款</option><option>上装</option><option>下装</option><option>配饰</option><option>包袋</option><option>限定</option></select>
+          </div>
         </div>
-        <button class="add-sku-btn" onclick="addSkuRow()">+ 添加 SKU</button>
+        <div class="form-group"><label>商品名称</label><input id="pName" placeholder="商品名称"></div>
+        <div class="form-row">
+          <div class="form-group"><label>售价 (¥)</label><input id="pPrice" type="number" placeholder="2899"></div>
+          <div class="form-group"><label>原价 (¥，可选)</label><input id="pOriginal" type="number" placeholder="3299"></div>
+        </div>
+        <div class="form-group"><label>商品描述</label><textarea id="pDesc" placeholder="商品描述"></textarea></div>
+        <div class="form-group">
+          <label>商品图片</label>
+          <div class="img-upload-area" id="imgUploadArea">
+            <span>📎 点击或拖拽上传图片</span>
+            <input type="file" id="imgUpload" accept="image/*" multiple onchange="handleImgUpload(this.files)">
+          </div>
+          <div class="img-preview-list" id="imgPreviewList"></div>
+        </div>
+        <div class="form-group">
+          <label>SKU 规格管理</label>
+          <div class="sku-builder" id="skuBuilder"></div>
+          <button class="add-sku-btn" onclick="addSkuRow()">+ 添加规格</button>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:16px">
+          <button class="btn-primary" style="flex:1" onclick="saveProduct()">保存商品</button>
+          <button class="btn-secondary" style="flex:1" onclick="resetProductForm()">取消</button>
+        </div>
       </div>
-      <button class="submit-btn" id="publishBtn" onclick="publishProduct()">🚀 上架商品</button>
+      <div style="overflow-x:auto">
+        <table class="admin-table" id="productTable">
+          <thead><tr><th>图片</th><th>品牌</th><th>名称</th><th>价格</th><th>分类</th><th>库存</th><th>操作</th></tr></thead>
+          <tbody id="productTableBody"></tbody>
+        </table>
+      </div>
     </div>
-    <div id="adminList" style="display:none"></div>
-    <div id="adminOrders" style="display:none"></div>
+    <!-- Order Management -->
+    <div class="admin-section" id="sec-orders">
+      <h3>订单管理</h3>
+      <div style="overflow-x:auto">
+        <table class="admin-table" id="orderTable">
+          <thead><tr><th>订单号</th><th>时间</th><th>商品</th><th>金额</th><th>支付</th><th>状态</th><th>物流</th><th>操作</th></tr></thead>
+          <tbody id="orderTableBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="orderEmpty" style="display:none">
+        <div class="empty-icon">📦</div>
+        <p>暂无订单</p>
+      </div>
+    </div>
+    <!-- Coupon Management -->
+    <div class="admin-section" id="sec-coupons">
+      <h3>优惠券管理</h3>
+      <div class="admin-form">
+        <h4>创建优惠券</h4>
+        <div class="form-group"><label>优惠券名称</label><input id="cName" placeholder="如：新人专享券"></div>
+        <div class="form-row">
+          <div class="form-group"><label>类型</label>
+            <select id="cType" onchange="toggleCouponValue()"><option value="fixed">满减</option><option value="percent">折扣</option></select>
+          </div>
+          <div class="form-group"><label id="cValueLabel">优惠金额 (¥)</label><input id="cValue" type="number" placeholder="50"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>最低消费 (¥)</label><input id="cMinSpend" type="number" placeholder="200"></div>
+          <div class="form-group"><label>有效期</label><input id="cExpires" type="date"></div>
+        </div>
+        <button class="btn-primary" onclick="saveCoupon()">创建优惠券</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>名称</th><th>类型</th><th>优惠</th><th>最低消费</th><th>有效期</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="couponTableBody"></tbody>
+      </table>
+    </div>
+    <!-- Reviews -->
+    <div class="admin-section" id="sec-reviews">
+      <h3>评价管理</h3>
+      <div class="empty-state">
+        <div class="empty-icon">⭐</div>
+        <p>暂无评价，买家确认收货后可进行评价</p>
+      </div>
+    </div>
+    <!-- Stock Warning -->
+    <div class="admin-section" id="sec-stock">
+      <h3>库存预警 <small style="color:var(--text2);font-weight:400">（库存 ≤ 5）</small></h3>
+      <table class="admin-table">
+        <thead><tr><th>商品</th><th>规格</th><th>库存</th></tr></thead>
+        <tbody id="stockTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="stockEmpty" style="display:none">
+        <div class="empty-icon">✅</div>
+        <p>所有商品库存充足</p>
+      </div>
+    </div>
   </div>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════
-//  GITHUB CLOUD SYNC CONFIG
-// ══════════════════════════════════════════
-const GH = {
+// ==================== CONFIG ====================
+const CONFIG = {
   owner: 'icon0911',
   repo: 'drip-vault',
   branch: 'main',
-  dataFile: 'data/products.json',
-  orderFile: 'data/orders.json',
-  get rawBase() { return `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}`; },
-  get apiBase() { return `https://api.github.com/repos/${this.owner}/${this.repo}`; },
+  adminPassword: 'drip2024',
+  rawBase: 'https://raw.githubusercontent.com/icon0911/drip-vault/main/data/',
+  apiBase: 'https://api.github.com/repos/icon0911/drip-vault/contents/data/',
 };
-const ADMIN_PWD = 'drip2024';
-const CART_KEY = 'dripvault_cart';
 
-let _products = [];
-let _orders = [];
-let _ghToken = '';
-let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-let selectedPay = 'wechat';
-let detailProduct = null;
-let detailSelectedSku = null;
-let editingId = null;
+// ==================== STATE ====================
+let shopData = {};
+let productsData = [];
+let ordersData = [];
+let couponsData = [];
+let cart = JSON.parse(localStorage.getItem('dv_cart') || '[]');
+let selectedCoupon = null;
+let currentProduct = null;
+let selectedSku = null;
+let currentPayMethod = '微信支付';
+let pendingOrder = null;
+let productImages = []; // base64 images for upload
 
-// ══════════════════════════════════════════
-//  GITHUB API
-// ══════════════════════════════════════════
-async function ghFetch(path, opts = {}) {
-  const url = path.startsWith('http') ? path : `${GH.apiBase}/${path}`;
-  const headers = { 'Accept': 'application/vnd.github+json', ...opts.headers };
-  if (_ghToken) headers['Authorization'] = `token ${_ghToken}`;
-  const res = await fetch(url, { ...opts, headers });
-  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-  return res;
-}
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', async () => {
+  updateCartBadge();
+  await loadAllData();
+  initCategoryFilter();
+});
 
-async function loadCloudData() {
-  setSync('syncing');
+async function loadAllData() {
+  setSyncStatus('syncing', '同步中...');
   try {
-    // Try loading from GitHub raw (no auth needed, uses CDN cache)
-    const [prodRes, orderRes] = await Promise.all([
-      fetch(`${GH.rawBase}/${GH.dataFile}?t=${Date.now()}`),
-      fetch(`${GH.rawBase}/${GH.orderFile}?t=${Date.now()}`).catch(() => null)
+    const [shop, products, orders, coupons] = await Promise.all([
+      fetchJSON('shop.json'),
+      fetchJSON('products.json'),
+      fetchJSON('orders.json'),
+      fetchJSON('coupons.json'),
     ]);
-    if (prodRes.ok) {
-      const text = await prodRes.text();
-      _products = JSON.parse(text);
-    }
-    if (orderRes && orderRes.ok) {
-      const text = await orderRes.text();
-      _orders = JSON.parse(text);
-    }
-    setSync('ok');
+    shopData = shop || getDefaultShop();
+    productsData = products || getDefaultProducts();
+    ordersData = orders || [];
+    couponsData = coupons || getDefaultCoupons();
+    renderShop();
+    renderProducts();
+    renderCoupons();
+    setSyncStatus('online', '已连接');
   } catch (e) {
-    console.warn('Cloud load failed, using seed data', e);
-    if (_products.length === 0) seedData();
-    setSync('err');
-  }
-  renderAll();
-}
-
-async function saveToCloud() {
-  if (!_ghToken) { toast('请先登录管理后台 ⚠️'); return false; }
-  setSync('syncing');
-  try {
-    await commitFile(GH.dataFile, JSON.stringify(_products, null, 2), 'update products');
-    await commitFile(GH.orderFile, JSON.stringify(_orders, null, 2), 'update orders');
-    setSync('ok');
-    return true;
-  } catch (e) {
-    console.error('Save failed', e);
-    setSync('err');
-    toast('云端保存失败 ⚠️');
-    return false;
+    console.error('Load failed:', e);
+    shopData = getDefaultShop();
+    productsData = getDefaultProducts();
+    ordersData = [];
+    couponsData = getDefaultCoupons();
+    renderShop();
+    renderProducts();
+    renderCoupons();
+    setSyncStatus('offline', '离线模式');
   }
 }
 
-async function commitFile(path, content, message) {
-  // Get current file SHA (if exists)
-  let sha = null;
-  try {
-    const res = await ghFetch(`contents/${path}`);
-    const data = await res.json();
-    sha = data.sha;
-  } catch (e) { /* file doesn't exist yet */ }
+async function fetchJSON(filename) {
+  const res = await fetch(CONFIG.rawBase + filename + '?t=' + Date.now());
+  if (!res.ok) return null;
+  return res.json();
+}
 
+function setSyncStatus(state, text) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  dot.className = 'sync-dot ' + (state === 'syncing' ? 'syncing' : state === 'offline' ? 'offline' : '');
+  txt.textContent = text;
+}
+
+// ==================== GITHUB API ====================
+async function githubCommit(filename, content, message) {
+  const token = sessionStorage.getItem('dv_token');
+  if (!token) throw new Error('未登录');
+  // Get SHA
+  let sha = '';
+  try {
+    const res = await fetch(CONFIG.apiBase + filename, {
+      headers: { 'Authorization': 'token ' + token }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      sha = data.sha;
+    }
+  } catch (e) {}
   const body = {
-    message,
+    message: message || 'Update ' + filename,
     content: btoa(unescape(encodeURIComponent(content))),
-    branch: GH.branch,
+    branch: CONFIG.branch,
   };
   if (sha) body.sha = sha;
-
-  await ghFetch(`contents/${path}`, {
+  const res = await fetch(CONFIG.apiBase + filename, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Authorization': 'token ' + token,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(body),
   });
+  if (!res.ok) throw new Error('GitHub API error: ' + res.status);
+  return res.json();
 }
 
-function setSync(status) {
-  const dot = document.getElementById('syncDot');
-  const text = document.getElementById('syncText');
-  dot.className = 'dot ' + status;
-  text.textContent = status === 'ok' ? '已同步' : status === 'syncing' ? '同步中...' : '离线模式';
+// ==================== RENDER ====================
+function renderShop() {
+  document.getElementById('shopName').textContent = shopData.name || 'Drip Vault';
+  document.getElementById('shopSlogan').textContent = shopData.slogan || '';
+  document.getElementById('navLogo').innerHTML = (shopData.name || 'DRIP').replace(/\s/g, '') + '<span>VAULT</span>';
+  document.title = (shopData.name || 'Drip Vault') + ' - 精选潮流单品';
+  if (shopData.banner) {
+    document.getElementById('bannerSection').innerHTML = '<img class="banner-img" src="' + shopData.banner + '" alt="banner" onerror="this.parentElement.innerHTML=\'<div class=banner-placeholder><h1>DRIP VAULT</h1><p>精选潮流单品 · 限量发售</p></div>\'">';
+  }
+  if (shopData.serviceQR) {
+    document.getElementById('serviceQR').src = shopData.serviceQR;
+  }
 }
 
-// ══════════════════════════════════════════
-//  SEED DATA
-// ══════════════════════════════════════════
-function seedData() {
-  _products = [
-    { id:'p1', brand:'Nike', name:'Air Jordan 1 Retro High OG "Chicago Lost & Found"', price:2899, original:3299, category:'鞋款', desc:'经典芝加哥配色复刻，做旧中底呈现年代感，皮质鞋面质感一流。附带特殊鞋盒及配件。', img:'', skUs:[{spec:'US 8 / 41',stock:3},{spec:'US 9 / 42',stock:5},{spec:'US 10 / 43',stock:2},{spec:'US 11 / 44',stock:4}] },
-    { id:'p2', brand:'Supreme', name:'Box Logo Hooded Sweatshirt FW24', price:3599, original:0, category:'上装', desc:'Supreme 经典 Box Logo 连帽卫衣，重磅纯棉面料，oversize 剪裁。', img:'', skUs:[{spec:'M / 黑色',stock:2},{spec:'L / 黑色',stock:3},{spec:'XL / 黑色',stock:1},{spec:'L / 灰色',stock:2}] },
-    { id:'p3', brand:'Travis Scott x Nike', name:'Air Max 1 "Cactus Jack"', price:4299, original:4999, category:'鞋款', desc:'Travis Scott 与 Nike 联名 Air Max 1，反向 Swoosh 设计，附赠多副鞋带。', img:'', skUs:[{spec:'US 8 / 41',stock:1},{spec:'US 9 / 42',stock:2},{spec:'US 10 / 43',stock:1}] },
-    { id:'p4', brand:'Chrome Hearts', name:'CH Plus 戒指 纯银', price:5800, original:0, category:'配饰', desc:'Chrome Hearts 经典十字花戒指，925纯银手工打造。', img:'', skUs:[{spec:'US 7 / 14号',stock:2},{spec:'US 8 / 16号',stock:3},{spec:'US 9 / 18号',stock:1}] },
-    { id:'p5', brand:'Stüssy', name:'Basic Stüssy Tee 限定色', price:699, original:899, category:'上装', desc:'Stüssy 基础 Logo T恤，280g 重磅棉，限定薄荷绿配色。', img:'', skUs:[{spec:'M',stock:6},{spec:'L',stock:8},{spec:'XL',stock:4}] },
-    { id:'p6', brand:'Off-White', name:'Industrial Belt 黄色', price:2199, original:0, category:'配饰', desc:'Off-White 经典工业风腰带，3米超长设计，标志性黄色。', img:'', skUs:[{spec:'均码',stock:5}] },
-  ];
-  _orders = [];
-}
-
-// ══════════════════════════════════════════
-//  RENDER
-// ══════════════════════════════════════════
-function renderAll() {
-  renderProducts();
-  renderFilters();
-  updateCartBadge();
-  updateStats();
-}
-
-function renderProducts(filter) {
-  const grid = document.getElementById('productGrid');
-  const filtered = filter && filter !== '全部' ? _products.filter(p => p.category === filter) : _products;
-  if (filtered.length === 0) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">📦</div><p>暂无商品</p></div>';
+function renderProducts(category) {
+  const grid = document.getElementById('productsGrid');
+  let list = productsData;
+  if (category && category !== '全部') {
+    list = list.filter(p => p.category === category);
+  }
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>暂无商品</p></div>';
     return;
   }
-  grid.innerHTML = filtered.map(p => {
-    const totalStock = (p.skUs||[]).reduce((s,sk) => s + sk.stock, 0);
+  grid.innerHTML = list.map(p => {
+    const totalStock = (p.skus || []).reduce((s, sk) => s + (sk.stock || 0), 0);
     const soldOut = totalStock <= 0;
-    return `
-    <div class="product-card" onclick="openDetail('${p.id}')">
-      ${p.img ? `<img class="product-img" src="${p.img}" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#1a1a1a,#222)">🏷️</div>`}
-      <div class="product-info">
-        <div class="product-brand">${p.brand}</div>
-        <div class="product-name">${p.name}</div>
-        <div class="product-price">¥${p.price.toLocaleString()}${p.original ? `<span class="original">¥${p.original.toLocaleString()}</span>` : ''}</div>
-        <div class="product-tags"><span>${p.category}</span>${soldOut ? '<span style="background:rgba(255,77,106,.15);color:var(--accent2)">售罄</span>' : `<span>库存 ${totalStock}</span>`}</div>
-      </div>
-    </div>`;
+    const lowStock = totalStock > 0 && totalStock <= 5;
+    const img = (p.images && p.images[0]) || '';
+    return '<div class="product-card" onclick="openProduct(\'' + p.id + '\')">' +
+      '<img class="card-img" src="' + img + '" alt="" onerror="this.style.background=\'#1a1a1a\'">' +
+      '<div class="card-body">' +
+      '<div class="card-brand">' + esc(p.brand || '') + '</div>' +
+      '<div class="card-name">' + esc(p.name || '') + '</div>' +
+      '<div class="card-price">' +
+      '<span class="price-now">¥' + (p.price || 0) + '</span>' +
+      (p.original ? '<span class="price-original">¥' + p.original + '</span>' : '') +
+      '</div>' +
+      '<div class="card-tags">' +
+      (soldOut ? '<span class="tag sold-out">已售罄</span>' : '') +
+      (lowStock ? '<span class="tag low-stock">仅剩' + totalStock + '件</span>' : '') +
+      (p.category ? '<span class="tag">' + p.category + '</span>' : '') +
+      '</div></div></div>';
   }).join('');
-  updateStats();
 }
 
-function renderFilters() {
-  const cats = ['全部', ...new Set(_products.map(p => p.category))];
-  document.getElementById('filters').innerHTML = cats.map((c,i) =>
-    `<button class="filter-btn ${i===0?'active':''}" onclick="filterProducts('${c}', this)">${c}</button>`
-  ).join('');
+function renderCoupons() {
+  const row = document.getElementById('couponsRow');
+  const available = couponsData.filter(c => c.enabled && new Date(c.expires) > new Date());
+  if (!available.length) {
+    document.getElementById('couponsSection').style.display = 'none';
+    return;
+  }
+  document.getElementById('couponsSection').style.display = '';
+  row.innerHTML = available.map(c => {
+    const claimed = localStorage.getItem('dv_coupon_' + c.id);
+    const valText = c.type === 'fixed' ? '¥' + c.value : c.value + '折';
+    const condText = '满¥' + c.minSpend + '可用';
+    return '<div class="coupon-card">' +
+      '<div class="coupon-value">' + valText + '<small>' + (c.type === 'fixed' ? ' 满减券' : ' 折扣券') + '</small></div>' +
+      '<div class="coupon-name">' + esc(c.name) + '</div>' +
+      '<div class="coupon-cond">' + condText + ' · 有效期至 ' + c.expires + '</div>' +
+      '<button class="coupon-btn" ' + (claimed ? 'disabled' : '') + ' onclick="claimCoupon(\'' + c.id + '\',this)">' +
+      (claimed ? '已领取' : '立即领取') + '</button></div>';
+  }).join('');
 }
 
-function filterProducts(cat, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts(cat);
+function claimCoupon(id, btn) {
+  localStorage.setItem('dv_coupon_' + id, '1');
+  btn.disabled = true;
+  btn.textContent = '已领取';
+  toast('优惠券领取成功！', 'success');
 }
 
-function updateStats() {
-  document.getElementById('statProducts').textContent = _products.length;
-  document.getElementById('statBrands').textContent = new Set(_products.map(p=>p.brand)).size;
+// ==================== CATEGORY FILTER ====================
+function initCategoryFilter() {
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts(btn.dataset.cat);
+    });
+  });
 }
 
-function scrollToProducts() { document.querySelector('.section-title').scrollIntoView({behavior:'smooth'}); }
-
-// ══════════════════════════════════════════
-//  PRODUCT DETAIL
-// ══════════════════════════════════════════
-function openDetail(id) {
-  const p = _products.find(x => x.id === id);
+// ==================== PRODUCT DETAIL ====================
+function openProduct(id) {
+  const p = productsData.find(x => x.id === id);
   if (!p) return;
-  detailProduct = p;
-  detailSelectedSku = null;
-  document.getElementById('detailImg').src = p.img || '';
-  document.getElementById('detailImg').style.display = p.img ? 'block' : 'none';
-  document.getElementById('detailBrand').textContent = p.brand;
-  document.getElementById('detailName').textContent = p.name;
-  document.getElementById('detailPrice').textContent = `¥${p.price.toLocaleString()}`;
-  document.getElementById('detailDesc').textContent = p.desc;
-  const sel = document.getElementById('skuSelector');
-  if (p.skUs && p.skUs.length) {
-    sel.innerHTML = `<label>选择规格</label><div class="sku-options">${p.skUs.map((s,i) =>
-      `<div class="sku-opt ${s.stock<=0?'out':''}" onclick="${s.stock>0?`selectDetailSku(${i},this)`:''}">${s.spec}${s.stock<=0?' (售罄)':''}</div>`
-    ).join('')}</div>`;
-  } else { sel.innerHTML = ''; }
-  document.getElementById('detailAddBtn').disabled = true;
-  openModal('detailModal');
+  currentProduct = p;
+  selectedSku = null;
+  productImages = [];
+
+  document.getElementById('pdBrand').textContent = p.brand || '';
+  document.getElementById('pdName').textContent = p.name || '';
+  document.getElementById('pdPrice').textContent = '¥' + (p.price || 0);
+  document.getElementById('pdOriginal').textContent = p.original ? '¥' + p.original : '';
+  document.getElementById('pdOriginal').style.display = p.original ? '' : 'none';
+  document.getElementById('pdDesc').textContent = p.desc || '';
+
+  // Images
+  const imgs = p.images || [];
+  const mainImg = document.getElementById('pdMainImg');
+  mainImg.src = imgs[0] || '';
+  const thumbs = document.getElementById('pdThumbs');
+  thumbs.innerHTML = imgs.map((img, i) =>
+    '<img class="pd-thumb ' + (i === 0 ? 'active' : '') + '" src="' + img + '" onclick="switchMainImg(this,' + i + ')">'
+  ).join('');
+
+  // SKUs
+  const skuSection = document.getElementById('pdSkuSection');
+  const skus = p.skus || [];
+  if (skus.length) {
+    skuSection.innerHTML = '<div class="pd-sku-label">选择规格</div><div class="pd-sku-options">' +
+      skus.map((s, i) => {
+        const out = s.stock <= 0;
+        return '<button class="pd-sku-btn ' + (out ? 'out' : '') + '" data-idx="' + i + '" onclick="selectSku(' + i + ')" ' + (out ? 'disabled' : '') + '>' + esc(s.spec) + (out ? ' (售罄)' : '') + '</button>';
+      }).join('') + '</div>';
+  } else {
+    skuSection.innerHTML = '';
+  }
+
+  document.getElementById('pdAddCart').disabled = false;
+  document.getElementById('pdAddCart').textContent = '加入购物车';
+  openModal('productModal');
 }
 
-function selectDetailSku(idx, el) {
-  detailSelectedSku = idx;
-  document.querySelectorAll('.sku-opt').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('detailAddBtn').disabled = false;
+function switchMainImg(el, idx) {
+  document.getElementById('pdMainImg').src = el.src;
+  document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
 }
 
-function addFromDetail() {
-  if (!detailProduct || detailSelectedSku === null) return;
-  const sku = detailProduct.skUs[detailSelectedSku];
-  addToCart(detailProduct.id, sku.spec, detailProduct.price, detailProduct.name, detailProduct.brand, detailProduct.img);
-  closeModal('detailModal');
+function selectSku(idx) {
+  const skus = currentProduct.skus || [];
+  if (skus[idx].stock <= 0) return;
+  selectedSku = idx;
+  document.querySelectorAll('.pd-sku-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.pd-sku-btn[data-idx="' + idx + '"]').classList.add('active');
+  // Switch image if SKU has one
+  if (skus[idx].img) {
+    document.getElementById('pdMainImg').src = skus[idx].img;
+  }
+  document.getElementById('pdAddCart').disabled = false;
+  document.getElementById('pdAddCart').textContent = '加入购物车';
 }
 
-// ══════════════════════════════════════════
-//  CART
-// ══════════════════════════════════════════
-function addToCart(productId, skuSpec, price, name, brand, img) {
-  const key = `${productId}::${skuSpec}`;
+function addToCartFromDetail() {
+  if (!currentProduct) return;
+  const skus = currentProduct.skus || [];
+  let spec = '默认';
+  if (skus.length) {
+    if (selectedSku === null) {
+      toast('请选择规格', 'error');
+      return;
+    }
+    if (skus[selectedSku].stock <= 0) {
+      toast('该规格已售罄', 'error');
+      return;
+    }
+    spec = skus[selectedSku].spec;
+  }
+  const key = currentProduct.id + '|' + spec;
   const existing = cart.find(c => c.key === key);
-  if (existing) { existing.qty++; } else { cart.push({ key, productId, skuSpec, price, name, brand, img, qty:1 }); }
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  updateCartBadge();
-  toast('已加入购物车 🛒');
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({
+      key,
+      productId: currentProduct.id,
+      spec,
+      name: currentProduct.name,
+      brand: currentProduct.brand,
+      price: currentProduct.price,
+      img: (currentProduct.images && currentProduct.images[0]) || '',
+      qty: 1,
+    });
+  }
+  saveCart();
+  toast('已加入购物车', 'success');
+  closeModal('productModal');
 }
 
-function updateCartBadge() { document.getElementById('cartBadge').textContent = cart.reduce((s,c) => s+c.qty, 0); }
+// ==================== CART ====================
+function saveCart() {
+  localStorage.setItem('dv_cart', JSON.stringify(cart));
+  updateCartBadge();
+}
 
-function openCart() { renderCart(); openModal('cartModal'); }
+function updateCartBadge() {
+  const count = cart.reduce((s, c) => s + c.qty, 0);
+  document.getElementById('cartBadge').textContent = count;
+  document.getElementById('mcbCount').textContent = count;
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  document.getElementById('mcbTotal').textContent = '¥' + total;
+}
+
+function openCart() {
+  renderCart();
+  openModal('cartModal');
+}
 
 function renderCart() {
-  const container = document.getElementById('cartItems');
-  if (cart.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">🛒</div><p>购物车是空的</p></div>';
-    document.getElementById('cartTotal').textContent = '0';
-    document.getElementById('checkoutBtn').disabled = true;
+  const body = document.getElementById('cartBody');
+  const footer = document.getElementById('cartFooter');
+  if (!cart.length) {
+    body.innerHTML = '<div class="empty-state"><div class="empty-icon">🛒</div><p>购物车是空的</p></div>';
+    footer.innerHTML = '';
     return;
   }
-  container.innerHTML = cart.map((c,i) => `
-    <div class="cart-item">
-      ${c.img ? `<img src="${c.img}">` : '<div style="width:72px;height:72px;background:#1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px">🏷️</div>'}
-      <div class="cart-item-info">
-        <div class="cart-item-name">${c.name}</div>
-        <div class="cart-item-sku">${c.skuSpec}</div>
-        <div class="cart-item-price">¥${c.price.toLocaleString()}</div>
-      </div>
-      <div class="cart-qty">
-        <button onclick="changeQty(${i},-1)">−</button>
-        <span>${c.qty}</span>
-        <button onclick="changeQty(${i},1)">+</button>
-      </div>
-      <button class="cart-remove" onclick="removeFromCart(${i})">🗑</button>
-    </div>
-  `).join('');
-  document.getElementById('cartTotal').textContent = cart.reduce((s,c) => s + c.price * c.qty, 0).toLocaleString();
-  document.getElementById('checkoutBtn').disabled = false;
-}
-
-function changeQty(i, d) { cart[i].qty += d; if (cart[i].qty <= 0) cart.splice(i, 1); localStorage.setItem(CART_KEY, JSON.stringify(cart)); renderCart(); updateCartBadge(); }
-function removeFromCart(i) { cart.splice(i, 1); localStorage.setItem(CART_KEY, JSON.stringify(cart)); renderCart(); updateCartBadge(); }
-
-// ══════════════════════════════════════════
-//  PAYMENT
-// ══════════════════════════════════════════
-function openPayment() {
-  if (cart.length === 0) return;
-  closeModal('cartModal');
-  const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
-  document.getElementById('payAmount').textContent = total.toLocaleString();
-  document.getElementById('orderInfo').innerHTML = cart.map(c =>
-    `<div class="row"><span class="label">${c.brand} ${c.name} × ${c.qty}</span><span>¥${(c.price*c.qty).toLocaleString()}</span></div>`
+  body.innerHTML = cart.map((item, i) =>
+    '<div class="cart-item">' +
+    '<img src="' + item.img + '" alt="" onerror="this.style.background=\'#1a1a1a\'">' +
+    '<div class="cart-item-info">' +
+    '<div class="cart-item-name">' + esc(item.brand + ' ' + item.name) + '</div>' +
+    '<div class="cart-item-spec">' + esc(item.spec) + '</div>' +
+    '<div class="cart-item-price">¥' + item.price + '</div></div>' +
+    '<div class="cart-qty">' +
+    '<button onclick="changeQty(' + i + ',-1)">−</button>' +
+    '<span>' + item.qty + '</span>' +
+    '<button onclick="changeQty(' + i + ',1)">+</button></div>' +
+    '<button class="cart-del" onclick="removeCartItem(' + i + ')">✕</button></div>'
   ).join('');
-  selectedPay = 'wechat';
-  document.querySelectorAll('.pay-method').forEach((m,i) => m.classList.toggle('selected', i===0));
-  showPayQR('wechat');
-  document.getElementById('qrHint').textContent = '请使用微信扫一扫完成支付';
-  openModal('payModal');
-}
 
-function selectPay(method, el) {
-  selectedPay = method;
-  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
-  el.classList.add('selected');
-  showPayQR(method);
-  document.getElementById('qrHint').textContent = method === 'wechat' ? '请使用微信扫一扫完成支付' : '请使用支付宝扫一扫完成支付';
-}
-
-function showPayQR(method) {
-  const area = document.getElementById('qrArea');
-  const src = method === 'wechat' ? 'images/wechat.png' : 'images/alipay.jpg';
-  area.innerHTML = `<img src="${src}" style="max-width:220px;border-radius:12px" alt="${method === 'wechat' ? '微信' : '支付宝'}收款码">`;
-}
-
-async function confirmPay() {
-  const orderId = 'DV' + Date.now().toString(36).toUpperCase();
-  const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
-  const order = { id:orderId, items:[...cart], total, payMethod:selectedPay==='wechat'?'微信支付':'支付宝', time:new Date().toLocaleString('zh-CN'), status:'已完成' };
-  // Deduct stock
-  cart.forEach(c => {
-    const p = _products.find(x => x.id === c.productId);
-    if (p && p.skUs) { const sku = p.skUs.find(s => s.spec === c.skuSpec); if (sku) sku.stock = Math.max(0, sku.stock - c.qty); }
-  });
-  _orders.unshift(order);
-  cart = [];
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  closeModal('payModal');
-  toast(`支付成功！订单号：${orderId} ✅`);
-  renderAll();
-  // Try to save to cloud (best effort)
-  if (_ghToken) saveToCloud();
-}
-
-// ══════════════════════════════════════════
-//  ADMIN LOGIN
-// ══════════════════════════════════════════
-function openAdmin() {
-  if (sessionStorage.getItem('dv_admin') === '1') {
-    _ghToken = sessionStorage.getItem('dv_token') || '';
-    openAdminPanel(); return;
+  const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  // Coupon selector
+  const available = couponsData.filter(c => c.enabled && new Date(c.expires) > new Date() && localStorage.getItem('dv_coupon_' + c.id));
+  let couponHTML = '';
+  if (available.length) {
+    couponHTML = '<div class="cart-coupon-row"><select id="cartCouponSelect" onchange="applyCoupon()"><option value="">不使用优惠券</option>' +
+      available.map(c => {
+        const valText = c.type === 'fixed' ? '减¥' + c.value : c.value + '折';
+        return '<option value="' + c.id + '">' + esc(c.name) + ' (' + valText + ', 满' + c.minSpend + ')</option>';
+      }).join('') + '</select></div>';
   }
-  openModal('loginModal');
-  document.getElementById('loginPwd').value = '';
-  document.getElementById('loginToken').value = '';
-  document.getElementById('loginPwd').focus();
+
+  let discount = 0;
+  if (selectedCoupon) {
+    if (subtotal >= selectedCoupon.minSpend) {
+      discount = selectedCoupon.type === 'fixed' ? selectedCoupon.value : Math.round(subtotal * (1 - selectedCoupon.value / 10));
+    } else {
+      selectedCoupon = null;
+    }
+  }
+
+  const finalTotal = Math.max(0, subtotal - discount);
+
+  footer.innerHTML = couponHTML +
+    (discount > 0 ? '<div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--primary);margin-bottom:8px"><span>优惠</span><span>-¥' + discount + '</span></div>' : '') +
+    '<div class="cart-total"><span>合计</span><span class="amount">¥' + finalTotal + '</span></div>' +
+    '<button class="btn-checkout" onclick="checkout()">去结算</button>';
 }
 
-function doLogin() {
-  const pwd = document.getElementById('loginPwd').value;
-  const token = document.getElementById('loginToken').value.trim();
-  if (pwd !== ADMIN_PWD) { toast('密码错误 ⚠️'); return; }
-  if (!token) { toast('请输入 GitHub Token ⚠️'); return; }
-  sessionStorage.setItem('dv_admin', '1');
-  sessionStorage.setItem('dv_token', token);
-  _ghToken = token;
-  closeModal('loginModal');
-  openAdminPanel();
-  toast('登录成功 ✅');
+function applyCoupon() {
+  const sel = document.getElementById('cartCouponSelect');
+  if (!sel || !sel.value) {
+    selectedCoupon = null;
+  } else {
+    selectedCoupon = couponsData.find(c => c.id === sel.value) || null;
+  }
+  renderCart();
 }
 
-function openAdminPanel() {
-  editingId = null;
-  document.getElementById('publishBtn').textContent = '🚀 上架商品';
-  clearProductForm();
-  renderAdminList();
-  renderAdminOrders();
-  openModal('adminModal');
+function changeQty(i, delta) {
+  cart[i].qty += delta;
+  if (cart[i].qty <= 0) cart.splice(i, 1);
+  saveCart();
+  renderCart();
 }
 
-// ══════════════════════════════════════════
-//  ADMIN ACTIONS
-// ══════════════════════════════════════════
-function switchAdminTab(tab, el) {
-  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('adminAdd').style.display = tab === 'add' ? 'block' : 'none';
-  document.getElementById('adminList').style.display = tab === 'list' ? 'block' : 'none';
-  document.getElementById('adminOrders').style.display = tab === 'orders' ? 'block' : 'none';
-  if (tab === 'list') renderAdminList();
-  if (tab === 'orders') renderAdminOrders();
+function removeCartItem(i) {
+  cart.splice(i, 1);
+  saveCart();
+  renderCart();
 }
 
-function handleImgUpload(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev) { document.getElementById('imgPreview').src = ev.target.result; document.getElementById('imgPreview').style.display = 'block'; };
-  reader.readAsDataURL(file);
+function checkout() {
+  if (!cart.length) return;
+  closeModal('cartModal');
+  openModal('addressModal');
 }
 
-function addSkuRow() {
-  const mgr = document.getElementById('skuManager');
-  const row = document.createElement('div');
-  row.className = 'sku-row';
-  row.innerHTML = `<input type="text" placeholder="规格（如：白色 / L码）" class="sku-spec"><input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none"><button class="sku-remove" onclick="removeSkuRow(this)">✕</button>`;
-  mgr.appendChild(row);
-}
+// ==================== ADDRESS & PAYMENT ====================
+function confirmAddress() {
+  const name = document.getElementById('addrName').value.trim();
+  const phone = document.getElementById('addrPhone').value.trim();
+  const region = document.getElementById('addrRegion').value.trim();
+  const detail = document.getElementById('addrDetail').value.trim();
+  if (!name || !phone || !region || !detail) {
+    toast('请填写完整收货信息', 'error');
+    return;
+  }
+  if (!/^1\d{10}$/.test(phone)) {
+    toast('请输入正确的手机号', 'error');
+    return;
+  }
+  const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  let discount = 0;
+  if (selectedCoupon && subtotal >= selectedCoupon.minSpend) {
+    discount = selectedCoupon.type === 'fixed' ? selectedCoupon.value : Math.round(subtotal * (1 - selectedCoupon.value / 10));
+  }
+  const total = Math.max(0, subtotal - discount);
 
-function removeSkuRow(btn) { if (document.querySelectorAll('#skuManager .sku-row').length <= 1) return; btn.parentElement.remove(); }
-
-function getSkUsFromForm() {
-  const specs = document.querySelectorAll('.sku-spec');
-  const stocks = document.querySelectorAll('.sku-stock');
-  const skUs = [];
-  specs.forEach((s,i) => { const spec=s.value.trim(); const stock=parseInt(stocks[i].value)||0; if(spec) skUs.push({spec,stock}); });
-  return skUs;
-}
-
-async function publishProduct() {
-  const brand = document.getElementById('pBrand').value.trim();
-  const name = document.getElementById('pName').value.trim();
-  const price = parseFloat(document.getElementById('pPrice').value);
-  if (!brand || !name || !price) { toast('请填写品牌、名称和价格 ⚠️'); return; }
-  const skUs = getSkUsFromForm();
-  if (skUs.length === 0) { toast('请至少添加一个 SKU ⚠️'); return; }
-
-  const product = {
-    id: editingId || 'p' + Date.now(),
-    brand, name, price,
-    original: parseFloat(document.getElementById('pOriginal').value) || 0,
-    category: document.getElementById('pCategory').value,
-    desc: document.getElementById('pDesc').value.trim(),
-    img: document.getElementById('imgPreview').src || '',
-    skUs
+  pendingOrder = {
+    items: cart.map(c => ({ ...c })),
+    total,
+    address: { name, phone, detail: region + ' ' + detail },
+    coupon: selectedCoupon ? { id: selectedCoupon.id, name: selectedCoupon.name, discount } : null,
   };
 
-  if (editingId) {
-    const idx = _products.findIndex(p => p.id === editingId);
-    if (idx >= 0) _products[idx] = product;
-    toast('商品已更新 ✅');
+  closeModal('addressModal');
+  renderPayment(total);
+  openModal('paymentModal');
+}
+
+function renderPayment(amount) {
+  document.getElementById('paymentBody').innerHTML =
+    '<div class="payment-amount">¥' + amount + '<small>请扫描下方二维码完成支付</small></div>' +
+    '<div class="payment-methods">' +
+    '<div class="payment-method active" onclick="switchPayMethod(\'微信支付\',this)"><div class="pay-icon">💚</div><div class="pay-name">微信支付</div></div>' +
+    '<div class="payment-method" onclick="switchPayMethod(\'支付宝\',this)"><div class="pay-icon">💙</div><div class="pay-name">支付宝</div></div></div>' +
+    '<div class="qr-container" id="payQR"><img src="images/wechat.png" alt="微信收款码" onerror="this.src=\'\';this.alt=\'收款码未配置\'"><p>长按识别二维码支付</p></div>' +
+    '<button class="btn-primary" style="margin-top:16px" onclick="confirmPayment()">我已完成支付</button>';
+  currentPayMethod = '微信支付';
+}
+
+function switchPayMethod(method, el) {
+  currentPayMethod = method;
+  document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+  const qr = document.getElementById('payQR');
+  if (method === '微信支付') {
+    qr.innerHTML = '<img src="images/wechat.png" alt="微信收款码" onerror="this.src=\'\';this.alt=\'收款码未配置\'"><p>长按识别二维码支付</p>';
   } else {
-    _products.push(product);
-    toast('商品已上架 🚀');
+    qr.innerHTML = '<img src="images/alipay.jpg" alt="支付宝收款码" onerror="this.src=\'\';this.alt=\'收款码未配置\'"><p>长按识别二维码支付</p>';
+  }
+}
+
+async function confirmPayment() {
+  if (!pendingOrder) return;
+  const orderId = 'DV' + Date.now().toString(36).toUpperCase();
+  const order = {
+    id: orderId,
+    items: pendingOrder.items,
+    total: pendingOrder.total,
+    payMethod: currentPayMethod,
+    time: new Date().toLocaleString('zh-CN'),
+    status: '待发货',
+    address: pendingOrder.address,
+    tracking: { company: '', number: '' },
+    coupon: pendingOrder.coupon,
+    review: null,
+  };
+
+  // Decrease stock
+  for (const item of pendingOrder.items) {
+    const product = productsData.find(p => p.id === item.productId);
+    if (product && product.skus) {
+      const sku = product.skus.find(s => s.spec === item.spec);
+      if (sku) sku.stock = Math.max(0, sku.stock - item.qty);
+    }
   }
 
-  clearProductForm(); editingId = null;
-  document.getElementById('publishBtn').textContent = '🚀 上架商品';
-  renderAll(); renderAdminList();
-  await saveToCloud();
+  ordersData.unshift(order);
+
+  // Try to sync
+  closeModal('paymentModal');
+  cart = [];
+  saveCart();
+  selectedCoupon = null;
+  pendingOrder = null;
+
+  // Show success
+  document.getElementById('successBody').innerHTML =
+    '<div class="success-icon">🎉</div>' +
+    '<h3>支付成功！</h3>' +
+    '<p>订单号：' + orderId + '</p>' +
+    '<p>我们将在核实后尽快发货，请耐心等待</p>' +
+    '<button class="btn-primary" style="margin-top:20px;max-width:240px;margin-left:auto;margin-right:auto" onclick="closeModal(\'successModal\')">返回首页</button>';
+  openModal('successModal');
+
+  // Sync in background
+  if (sessionStorage.getItem('dv_token')) {
+    try {
+      await githubCommit('orders.json', JSON.stringify(ordersData, null, 2), 'New order ' + orderId);
+      await githubCommit('products.json', JSON.stringify(productsData, null, 2), 'Stock update for order ' + orderId);
+      toast('订单已同步', 'success');
+    } catch (e) {
+      console.error('Sync failed:', e);
+    }
+  }
 }
 
-function clearProductForm() {
-  ['pBrand','pName','pPrice','pOriginal','pDesc'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('pCategory').selectedIndex = 0;
-  document.getElementById('imgPreview').style.display = 'none';
-  document.getElementById('imgPreview').src = '';
-  document.getElementById('imgInput').value = '';
-  document.getElementById('skuManager').innerHTML = `<div class="sku-row"><input type="text" placeholder="规格（如：黑色 / 42码）" class="sku-spec"><input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none"><button class="sku-remove" onclick="removeSkuRow(this)">✕</button></div>`;
+// ==================== ADMIN ====================
+function openAdminLogin() {
+  openModal('adminLoginModal');
 }
 
-function renderAdminList() {
-  const container = document.getElementById('adminList');
-  if (_products.length === 0) { container.innerHTML = '<div class="empty-state"><div class="icon">📦</div><p>暂无商品</p></div>'; return; }
-  container.innerHTML = _products.map(p => {
-    const totalStock = (p.skUs||[]).reduce((s,sk) => s+sk.stock, 0);
-    const skuText = (p.skUs||[]).map(s => `${s.spec}(${s.stock})`).join('、');
-    return `
-    <div class="admin-product">
-      ${p.img ? `<img src="${p.img}">` : '<div style="width:64px;height:64px;background:#1a1a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px">🏷️</div>'}
-      <div class="admin-product-info">
-        <div class="admin-product-name">${p.brand} · ${p.name}</div>
-        <div class="admin-product-meta">¥${p.price.toLocaleString()} | ${p.category} | 总库存: ${totalStock}</div>
-        <div class="admin-product-meta" style="margin-top:4px;color:var(--accent);font-size:11px">SKU: ${skuText}</div>
-      </div>
-      <div class="admin-actions">
-        <button onclick="editProduct('${p.id}')">✏️ 编辑</button>
-        <button class="danger" onclick="deleteProduct('${p.id}')">🗑 删除</button>
-      </div>
-    </div>`;
+function adminLogin() {
+  const pass = document.getElementById('adminPass').value;
+  const token = document.getElementById('adminToken').value.trim();
+  if (pass !== CONFIG.adminPassword) {
+    toast('密码错误', 'error');
+    return;
+  }
+  if (!token) {
+    toast('请输入 GitHub Token', 'error');
+    return;
+  }
+  sessionStorage.setItem('dv_token', token);
+  closeModal('adminLoginModal');
+  showAdmin();
+  toast('登录成功', 'success');
+}
+
+function showAdmin() {
+  document.getElementById('adminPanel').classList.add('show');
+  document.getElementById('mainContent').style.display = 'none';
+  document.querySelector('.navbar').style.display = 'none';
+  document.querySelector('.sync-status').style.display = 'none';
+  document.getElementById('mobileCartBar').style.display = 'none';
+  loadAdminData();
+}
+
+function closeAdmin() {
+  document.getElementById('adminPanel').classList.remove('show');
+  document.getElementById('mainContent').style.display = '';
+  document.querySelector('.navbar').style.display = '';
+  document.querySelector('.sync-status').style.display = '';
+  if (window.innerWidth <= 768) {
+    document.getElementById('mobileCartBar').style.display = 'flex';
+  }
+}
+
+function switchAdminTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.admin-tab[data-tab="' + tab + '"]').classList.add('active');
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('show'));
+  document.getElementById('sec-' + tab).classList.add('show');
+}
+
+function loadAdminData() {
+  // Fill shop form
+  document.getElementById('shopNameInput').value = shopData.name || '';
+  document.getElementById('shopSloganInput').value = shopData.slogan || '';
+  document.getElementById('shopLogoInput').value = shopData.logo || '';
+  document.getElementById('shopBannerInput').value = shopData.banner || '';
+  document.getElementById('shopServiceQRInput').value = shopData.serviceQR || '';
+
+  renderAdminProducts();
+  renderAdminOrders();
+  renderAdminCoupons();
+  renderStockWarning();
+}
+
+async function saveShop() {
+  shopData.name = document.getElementById('shopNameInput').value.trim();
+  shopData.slogan = document.getElementById('shopSloganInput').value.trim();
+  shopData.logo = document.getElementById('shopLogoInput').value.trim();
+  shopData.banner = document.getElementById('shopBannerInput').value.trim();
+  shopData.serviceQR = document.getElementById('shopServiceQRInput').value.trim();
+  try {
+    setSyncStatus('syncing', '同步中...');
+    await githubCommit('shop.json', JSON.stringify(shopData, null, 2), 'Update shop config');
+    renderShop();
+    toast('店铺设置已保存', 'success');
+    setSyncStatus('online', '已连接');
+  } catch (e) {
+    toast('保存失败: ' + e.message, 'error');
+    setSyncStatus('offline', '同步失败');
+  }
+}
+
+// ==================== ADMIN PRODUCTS ====================
+function renderAdminProducts() {
+  const tbody = document.getElementById('productTableBody');
+  tbody.innerHTML = productsData.map(p => {
+    const totalStock = (p.skus || []).reduce((s, sk) => s + (sk.stock || 0), 0);
+    const img = (p.images && p.images[0]) || '';
+    return '<tr>' +
+      '<td><img src="' + img + '" onerror="this.style.background=\'#1a1a1a\'"></td>' +
+      '<td>' + esc(p.brand || '') + '</td>' +
+      '<td>' + esc(p.name || '') + '</td>' +
+      '<td>¥' + (p.price || 0) + '</td>' +
+      '<td>' + esc(p.category || '') + '</td>' +
+      '<td>' + totalStock + '</td>' +
+      '<td class="actions">' +
+      '<button onclick="editProduct(\'' + p.id + '\')">编辑</button>' +
+      '<button class="danger" onclick="deleteProduct(\'' + p.id + '\')">删除</button></td></tr>';
   }).join('');
+}
+
+function addSkuRow(spec, stock, img) {
+  const builder = document.getElementById('skuBuilder');
+  const row = document.createElement('div');
+  row.className = 'sku-row';
+  row.innerHTML =
+    '<input placeholder="规格 如:黑色/42" value="' + esc(spec || '') + '">' +
+    '<input type="number" placeholder="库存" value="' + (stock || 0) + '">' +
+    '<input placeholder="SKU图片URL(可选)" value="' + esc(img || '') + '">' +
+    '<button class="del-sku" onclick="this.parentElement.remove()">✕</button>';
+  builder.appendChild(row);
+}
+
+function getSkuData() {
+  const rows = document.querySelectorAll('#skuBuilder .sku-row');
+  const skus = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const spec = inputs[0].value.trim();
+    const stock = parseInt(inputs[1].value) || 0;
+    const img = inputs[2].value.trim();
+    if (spec) skus.push({ spec, stock, img });
+  });
+  return skus;
+}
+
+async function saveProduct() {
+  const id = document.getElementById('editProductId').value;
+  const brand = document.getElementById('pBrand').value.trim();
+  const category = document.getElementById('pCategory').value;
+  const name = document.getElementById('pName').value.trim();
+  const price = parseFloat(document.getElementById('pPrice').value);
+  const original = parseFloat(document.getElementById('pOriginal').value) || null;
+  const desc = document.getElementById('pDesc').value.trim();
+  const skus = getSkuData();
+
+  if (!name || !price) {
+    toast('请填写商品名称和价格', 'error');
+    return;
+  }
+
+  // Collect images from preview
+  const imgs = [];
+  document.querySelectorAll('#imgPreviewList .img-preview-item img').forEach(img => {
+    imgs.push(img.src);
+  });
+
+  if (id) {
+    // Edit
+    const idx = productsData.findIndex(p => p.id === id);
+    if (idx >= 0) {
+      productsData[idx] = { ...productsData[idx], brand, category, name, price, original, desc, images: imgs.length ? imgs : productsData[idx].images, skus };
+    }
+  } else {
+    // Add
+    const newId = 'p' + Date.now();
+    productsData.push({ id: newId, brand, category, name, price, original, desc, images: imgs, skus });
+  }
+
+  try {
+    setSyncStatus('syncing', '同步中...');
+    await githubCommit('products.json', JSON.stringify(productsData, null, 2), (id ? 'Update' : 'Add') + ' product: ' + name);
+    toast('商品已保存', 'success');
+    setSyncStatus('online', '已连接');
+  } catch (e) {
+    toast('保存失败: ' + e.message, 'error');
+    setSyncStatus('offline', '同步失败');
+  }
+
+  resetProductForm();
+  renderAdminProducts();
+  renderProducts();
+  renderStockWarning();
 }
 
 function editProduct(id) {
-  const p = _products.find(x => x.id === id);
+  const p = productsData.find(x => x.id === id);
   if (!p) return;
-  editingId = id;
-  document.getElementById('pBrand').value = p.brand;
-  document.getElementById('pName').value = p.name;
-  document.getElementById('pPrice').value = p.price;
+  document.getElementById('editProductId').value = p.id;
+  document.getElementById('productFormTitle').textContent = '编辑商品';
+  document.getElementById('pBrand').value = p.brand || '';
+  document.getElementById('pCategory').value = p.category || '鞋款';
+  document.getElementById('pName').value = p.name || '';
+  document.getElementById('pPrice').value = p.price || '';
   document.getElementById('pOriginal').value = p.original || '';
-  document.getElementById('pCategory').value = p.category;
-  document.getElementById('pDesc').value = p.desc;
-  if (p.img) { document.getElementById('imgPreview').src = p.img; document.getElementById('imgPreview').style.display = 'block'; }
-  const mgr = document.getElementById('skuManager');
-  mgr.innerHTML = '';
-  (p.skUs || []).forEach(s => {
-    const row = document.createElement('div'); row.className = 'sku-row';
-    row.innerHTML = `<input type="text" placeholder="规格" class="sku-spec" value="${s.spec}"><input type="number" placeholder="库存" class="sku-stock" style="width:80px;flex:none" value="${s.stock}"><button class="sku-remove" onclick="removeSkuRow(this)">✕</button>`;
-    mgr.appendChild(row);
-  });
-  if (mgr.children.length === 0) addSkuRow();
-  document.getElementById('publishBtn').textContent = '💾 保存修改';
-  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-  document.querySelector('.admin-tab').classList.add('active');
-  document.getElementById('adminAdd').style.display = 'block';
-  document.getElementById('adminList').style.display = 'none';
-  document.getElementById('adminOrders').style.display = 'none';
-  document.querySelector('#adminModal .modal').scrollTop = 0;
+  document.getElementById('pDesc').value = p.desc || '';
+
+  // Images
+  const preview = document.getElementById('imgPreviewList');
+  preview.innerHTML = (p.images || []).map((img, i) =>
+    '<div class="img-preview-item"><img src="' + img + '"><button class="remove-img" onclick="this.parentElement.remove()">✕</button></div>'
+  ).join('');
+
+  // SKUs
+  const builder = document.getElementById('skuBuilder');
+  builder.innerHTML = '';
+  (p.skus || []).forEach(s => addSkuRow(s.spec, s.stock, s.img));
+
+  window.scrollTo({ top: document.getElementById('productForm').offsetTop - 80, behavior: 'smooth' });
+}
+
+function resetProductForm() {
+  document.getElementById('editProductId').value = '';
+  document.getElementById('productFormTitle').textContent = '添加商品';
+  document.getElementById('pBrand').value = '';
+  document.getElementById('pName').value = '';
+  document.getElementById('pPrice').value = '';
+  document.getElementById('pOriginal').value = '';
+  document.getElementById('pDesc').value = '';
+  document.getElementById('imgPreviewList').innerHTML = '';
+  document.getElementById('skuBuilder').innerHTML = '';
+  document.getElementById('imgUpload').value = '';
 }
 
 async function deleteProduct(id) {
-  if (!confirm('确定要删除这件商品吗？')) return;
-  _products = _products.filter(p => p.id !== id);
-  renderAll(); renderAdminList();
-  toast('商品已删除 🗑');
-  await saveToCloud();
+  if (!confirm('确定删除此商品？')) return;
+  productsData = productsData.filter(p => p.id !== id);
+  try {
+    setSyncStatus('syncing', '同步中...');
+    await githubCommit('products.json', JSON.stringify(productsData, null, 2), 'Delete product ' + id);
+    toast('商品已删除', 'success');
+    setSyncStatus('online', '已连接');
+  } catch (e) {
+    toast('删除失败: ' + e.message, 'error');
+    setSyncStatus('offline', '同步失败');
+  }
+  renderAdminProducts();
+  renderProducts();
 }
 
+function handleImgUpload(files) {
+  const preview = document.getElementById('imgPreviewList');
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const div = document.createElement('div');
+      div.className = 'img-preview-item';
+      div.innerHTML = '<img src="' + e.target.result + '"><button class="remove-img" onclick="this.parentElement.remove()">✕</button>';
+      preview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ==================== ADMIN ORDERS ====================
 function renderAdminOrders() {
-  const container = document.getElementById('adminOrders');
-  if (_orders.length === 0) { container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>暂无订单</p></div>'; return; }
-  container.innerHTML = _orders.map(o => `
-    <div class="admin-product" style="flex-direction:column;align-items:flex-start">
-      <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
-        <div style="font-weight:700;font-size:14px">📦 ${o.id}</div>
-        <div style="font-size:12px;color:var(--accent)">${o.status}</div>
-      </div>
-      <div style="font-size:12px;color:var(--text-dim);margin-top:4px">${o.time} · ${o.payMethod}</div>
-      <div style="margin-top:8px;font-size:13px;width:100%">
-        ${o.items.map(c => `<div style="padding:4px 0;display:flex;justify-content:space-between"><span>${c.brand} ${c.name} × ${c.qty}</span><span style="color:var(--accent)">¥${(c.price*c.qty).toLocaleString()}</span></div>`).join('')}
-      </div>
-      <div style="font-weight:800;font-size:16px;color:var(--accent);margin-top:8px">合计: ¥${o.total.toLocaleString()}</div>
-    </div>
-  `).join('');
+  const tbody = document.getElementById('orderTableBody');
+  const empty = document.getElementById('orderEmpty');
+  if (!ordersData.length) {
+    tbody.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = ordersData.map(o => {
+    const statusClass = o.status === '待发货' ? 'pending' : o.status === '已发货' ? 'shipped' : 'done';
+    const itemsStr = (o.items || []).map(i => esc(i.name) + ' x' + i.qty).join(', ');
+    const tracking = o.tracking || {};
+    return '<tr>' +
+      '<td><strong>' + o.id + '</strong></td>' +
+      '<td style="white-space:nowrap;font-size:.7rem">' + o.time + '</td>' +
+      '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + itemsStr + '</td>' +
+      '<td style="color:var(--accent);font-weight:700">¥' + (o.total || 0) + '</td>' +
+      '<td>' + esc(o.payMethod || '') + '</td>' +
+      '<td><span class="status-badge ' + statusClass + '">' + o.status + '</span></td>' +
+      '<td style="font-size:.7rem">' + (tracking.company ? esc(tracking.company) + ' ' + esc(tracking.number) : '-') + '</td>' +
+      '<td class="actions">' +
+      (o.status === '待发货' ? '<button onclick="shipOrder(\'' + o.id + '\')">发货</button>' : '') +
+      (o.status === '已发货' ? '<button onclick="editTracking(\'' + o.id + '\')">编辑物流</button>' : '') +
+      (o.status === '已发货' ? '<button onclick="completeOrder(\'' + o.id + '\')">确认完成</button>' : '') +
+      '</td></tr>';
+  }).join('');
 }
 
-// ══════════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════════
-function openModal(id) { document.getElementById(id).classList.add('show'); document.body.style.overflow='hidden'; }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); document.body.style.overflow=''; }
-document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); }); });
+function shipOrder(id) {
+  const company = prompt('物流公司（如：顺丰速运）');
+  if (!company) return;
+  const number = prompt('运单号');
+  if (!number) return;
+  const order = ordersData.find(o => o.id === id);
+  if (!order) return;
+  order.status = '已发货';
+  order.tracking = { company, number };
+  syncOrders();
+}
 
-function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function editTracking(id) {
+  const order = ordersData.find(o => o.id === id);
+  if (!order) return;
+  const company = prompt('物流公司', order.tracking.company);
+  if (company === null) return;
+  const number = prompt('运单号', order.tracking.number);
+  if (number === null) return;
+  order.tracking = { company, number };
+  syncOrders();
+}
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.show').forEach(m => closeModal(m.id)); });
+function completeOrder(id) {
+  const order = ordersData.find(o => o.id === id);
+  if (!order) return;
+  order.status = '已完成';
+  syncOrders();
+}
 
-// ══════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════
-loadCloudData();
+async function syncOrders() {
+  try {
+    setSyncStatus('syncing', '同步中...');
+    await githubCommit('orders.json', JSON.stringify(ordersData, null, 2), 'Update orders');
+    toast('订单已更新', 'success');
+    setSyncStatus('online', '已连接');
+  } catch (e) {
+    toast('同步失败: ' + e.message, 'error');
+    setSyncStatus('offline', '同步失败');
+  }
+  renderAdminOrders();
+}
+
+// ==================== ADMIN COUPONS ====================
+function toggleCouponValue() {
+  const type = document.getElementById('cType').value;
+  document.getElementById('cValueLabel').textContent = type === 'fixed' ? '优惠金额 (¥)' : '折扣比例（如8=8折）';
+}
+
+function renderAdminCoupons() {
+  const tbody = document.getElementById('couponTableBody');
+  tbody.innerHTML = couponsData.map(c => {
+    const valText = c.type === 'fixed' ? '¥' + c.value : c.value + '折';
+    const statusText = c.enabled ? '启用' : '禁用';
+    const statusColor = c.enabled ? 'var(--primary)' : 'var(--text2)';
+    return '<tr>' +
+      '<td>' + esc(c.name) + '</td>' +
+      '<td>' + (c.type === 'fixed' ? '满减' : '折扣') + '</td>' +
+      '<td>' + valText + '</td>' +
+      '<td>¥' + (c.minSpend || 0) + '</td>' +
+      '<td>' + (c.expires || '-') + '</td>' +
+      '<td style="color:' + statusColor + '">' + statusText + '</td>' +
+      '<td class="actions">' +
+      '<button onclick="toggleCoupon(\'' + c.id + '\')">' + (c.enabled ? '禁用' : '启用') + '</button>' +
+      '<button class="danger" onclick="deleteCoupon(\'' + c.id + '\')">删除</button></td></tr>';
+  }).join('');
+}
+
+async function saveCoupon() {
+  const name = document.getElementById('cName').value.trim();
+  const type = document.getElementById('cType').value;
+  const value = parseFloat(document.getElementById('cValue').value);
+  const minSpend = parseFloat(document.getElementById('cMinSpend').value) || 0;
+  const expires = document.getElementById('cExpires').value;
+  if (!name || !value) {
+    toast('请填写优惠券名称和优惠值', 'error');
+    return;
+  }
+  const newCoupon = {
+    id: 'c' + Date.now(),
+    name, type, value, minSpend, enabled: true, expires: expires || '2025-12-31',
+  };
+  couponsData.push(newCoupon);
+  try {
+    setSyncStatus('syncing', '同步中...');
+    await githubCommit('coupons.json', JSON.stringify(couponsData, null, 2), 'Add coupon: ' + name);
+    toast('优惠券已创建', 'success');
+    setSyncStatus('online', '已连接');
+  } catch (e) {
+    toast('创建失败: ' + e.message, 'error');
+    setSyncStatus('offline', '同步失败');
+  }
+  document.getElementById('cName').value = '';
+  document.getElementById('cValue').value = '';
+  document.getElementById('cMinSpend').value = '';
+  document.getElementById('cExpires').value = '';
+  renderAdminCoupons();
+  renderCoupons();
+}
+
+async function toggleCoupon(id) {
+  const c = couponsData.find(x => x.id === id);
+  if (c) c.enabled = !c.enabled;
+  try {
+    setSyncStatus('syncing', '同步中...');
+    await githubCommit('coupons.json', JSON.stringify(couponsData, null, 2), 'Toggle coupon ' + id);
+    toast('优惠券状态已更新', 'success');
+    setSyncStatus('online', '已连接');
+  } catch (e) {
+    toast('更新失败: ' + e.message, 'error');
+    setSyncStatus('offline', '同步失败');
+  }
+  renderAdminCoupons();
+  renderCoupons();
+}
+
+async function deleteCoupon(id) {
+  if (!confirm('确定删除此优惠券？')) return;
+  couponsData = couponsData.filter(c => c.id !== id);
+  try {
+    setSyncStatus('syncing', '同步中...');
+    await githubCommit('coupons.json', JSON.stringify(couponsData, null, 2), 'Delete coupon ' + id);
+    toast('优惠券已删除', 'success');
+    setSyncStatus('online', '已连接');
+  } catch (e) {
+    toast('删除失败: ' + e.message, 'error');
+    setSyncStatus('offline', '同步失败');
+  }
+  renderAdminCoupons();
+  renderCoupons();
+}
+
+// ==================== STOCK WARNING ====================
+function renderStockWarning() {
+  const tbody = document.getElementById('stockTableBody');
+  const empty = document.getElementById('stockEmpty');
+  const lowItems = [];
+  productsData.forEach(p => {
+    (p.skus || []).forEach(s => {
+      if (s.stock <= 5) {
+        lowItems.push({ name: p.name, spec: s.spec, stock: s.stock });
+      }
+    });
+  });
+  if (!lowItems.length) {
+    tbody.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = lowItems.map(item =>
+    '<tr><td>' + esc(item.name) + '</td><td>' + esc(item.spec) + '</td><td class="stock-warn">' + item.stock + '</td></tr>'
+  ).join('');
+}
+
+// ==================== MODALS ====================
+function openModal(id) {
+  const overlay = document.getElementById(id);
+  overlay.classList.add('show');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => overlay.style.opacity = '1');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  const overlay = document.getElementById(id);
+  overlay.style.opacity = '0';
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }, 250);
+}
+
+// Click overlay to close
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal(overlay.id);
+  });
+});
+
+// ESC to close
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.show').forEach(m => closeModal(m.id));
+  }
+});
+
+// ==================== UTILS ====================
+function esc(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function toast(msg, type) {
+  const container = document.getElementById('toast');
+  const el = document.createElement('div');
+  el.className = 'toast ' + (type || '');
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.style.animation = 'toastOut .3s ease forwards';
+    setTimeout(() => el.remove(), 300);
+  }, 2500);
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function scrollToProducts() {
+  const el = document.getElementById('categoryBar');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ==================== DEFAULT DATA ====================
+function getDefaultShop() {
+  return {
+    name: "Drip Vault",
+    slogan: "精选潮流单品，限量发售",
+    logo: "",
+    banner: "",
+    wechatQR: "",
+    serviceQR: ""
+  };
+}
+
+function getDefaultProducts() {
+  return [
+    {
+      id: "p1",
+      brand: "Nike",
+      name: "Air Jordan 1 Retro High OG Chicago",
+      price: 2899,
+      original: 3299,
+      category: "鞋款",
+      desc: "经典红白黑配色，OG鞋型复刻，全掌Air Sole气垫，皮质鞋面质感出色。Jordan Brand标志性鞋款，潮流必备。",
+      images: ["https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=600"],
+      skus: [
+        { spec: "白色/40", stock: 3, img: "" },
+        { spec: "白色/41", stock: 5, img: "" },
+        { spec: "白色/42", stock: 2, img: "" },
+        { spec: "白色/43", stock: 0, img: "" },
+        { spec: "白色/44", stock: 4, img: "" }
+      ]
+    },
+    {
+      id: "p2",
+      brand: "Supreme",
+      name: "Box Logo Hooded Sweatshirt",
+      price: 1899,
+      original: 2199,
+      category: "上装",
+      desc: "Supreme经典Box Logo卫衣，重磅380g纯棉面料，oversize版型。黑色百搭，街头文化标志性单品。",
+      images: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600"],
+      skus: [
+        { spec: "黑色/M", stock: 6, img: "" },
+        { spec: "黑色/L", stock: 4, img: "" },
+        { spec: "黑色/XL", stock: 3, img: "" },
+        { spec: "灰色/M", stock: 2, img: "" },
+        { spec: "灰色/L", stock: 5, img: "" }
+      ]
+    },
+    {
+      id: "p3",
+      brand: "Travis Scott x Nike",
+      name: "Air Force 1 Low Cactus Jack",
+      price: 4599,
+      original: 5299,
+      category: "限定",
+      desc: "Travis Scott与Nike联名Air Force 1，可拆卸Swoosh设计，多材质拼接鞋面，附赠多副鞋带。限量发售，极具收藏价值。",
+      images: ["https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600"],
+      skus: [
+        { spec: "联名配色/40", stock: 1, img: "" },
+        { spec: "联名配色/42", stock: 2, img: "" },
+        { spec: "联名配色/43", stock: 1, img: "" }
+      ]
+    },
+    {
+      id: "p4",
+      brand: "Chrome Hearts",
+      name: "经典十字花戒指",
+      price: 3299,
+      original: null,
+      category: "配饰",
+      desc: "Chrome Hearts经典十字花纯银戒指，925纯银手工打造，暗黑哥特风格。每件均有独特手工痕迹，附品牌专属包装。",
+      images: ["https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600"],
+      skus: [
+        { spec: "银色/16号", stock: 3, img: "" },
+        { spec: "银色/18号", stock: 2, img: "" },
+        { spec: "银色/20号", stock: 4, img: "" }
+      ]
+    },
+    {
+      id: "p5",
+      brand: "Stüssy",
+      name: "Basic Logo Tee 黑色",
+      price: 599,
+      original: 699,
+      category: "上装",
+      desc: "Stüssy经典Logo短袖T恤，260g精梳棉，宽松版型。背面大Logo印花，夏日街头穿搭首选。",
+      images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600"],
+      skus: [
+        { spec: "黑色/S", stock: 8, img: "" },
+        { spec: "黑色/M", stock: 10, img: "" },
+        { spec: "黑色/L", stock: 7, img: "" },
+        { spec: "黑色/XL", stock: 5, img: "" }
+      ]
+    },
+    {
+      id: "p6",
+      brand: "Off-White",
+      name: "Industrial Belt 黄黑色",
+      price: 1599,
+      original: 1999,
+      category: "配饰",
+      desc: "Off-White经典工业风腰带，黄黑色标志性配色，可调节长度。Virgil Abloh设计，潮人必备配件。",
+      images: ["https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=600"],
+      skus: [
+        { spec: "黄黑/120cm", stock: 6, img: "" },
+        { spec: "黄黑/140cm", stock: 4, img: "" },
+        { spec: "黄黑/160cm", stock: 2, img: "" }
+      ]
+    }
+  ];
+}
+
+function getDefaultCoupons() {
+  return [
+    { id: "c1", name: "新人专享券", type: "fixed", value: 50, minSpend: 200, enabled: true, expires: "2026-12-31" },
+    { id: "c2", name: "满千减百", type: "fixed", value: 100, minSpend: 1000, enabled: true, expires: "2026-12-31" },
+    { id: "c3", name: "VIP 9折券", type: "percent", value: 9, minSpend: 500, enabled: true, expires: "2026-12-31" }
+  ];
+}
 </script>
 </body>
 </html>
