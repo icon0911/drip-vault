@@ -1,8 +1,118 @@
 [
-  {"id":"p1","brand":"Nike","name":"Air Jordan 1 Retro High OG \"Chicago Lost & Found\"","price":2899,"original":3299,"category":"鞋款","desc":"经典芝加哥配色复刻，做旧中底呈现年代感，皮质鞋面质感一流。附带特殊鞋盒及配件。","img":"","skUs":[{"spec":"US 8 / 41","stock":3},{"spec":"US 9 / 42","stock":5},{"spec":"US 10 / 43","stock":2},{"spec":"US 11 / 44","stock":4}]},
-  {"id":"p2","brand":"Supreme","name":"Box Logo Hooded Sweatshirt FW24","price":3599,"original":0,"category":"上装","desc":"Supreme 经典 Box Logo 连帽卫衣，重磅纯棉面料，oversize 剪裁。","img":"","skUs":[{"spec":"M / 黑色","stock":2},{"spec":"L / 黑色","stock":3},{"spec":"XL / 黑色","stock":1},{"spec":"L / 灰色","stock":2}]},
-  {"id":"p3","brand":"Travis Scott x Nike","name":"Air Max 1 \"Cactus Jack\"","price":4299,"original":4999,"category":"鞋款","desc":"Travis Scott 与 Nike 联名 Air Max 1，反向 Swoosh 设计，附赠多副鞋带。","img":"","skUs":[{"spec":"US 8 / 41","stock":1},{"spec":"US 9 / 42","stock":2},{"spec":"US 10 / 43","stock":1}]},
-  {"id":"p4","brand":"Chrome Hearts","name":"CH Plus 戒指 纯银","price":5800,"original":0,"category":"配饰","desc":"Chrome Hearts 经典十字花戒指，925纯银手工打造。","img":"","skUs":[{"spec":"US 7 / 14号","stock":2},{"spec":"US 8 / 16号","stock":3},{"spec":"US 9 / 18号","stock":1}]},
-  {"id":"p5","brand":"Stüssy","name":"Basic Stüssy Tee 限定色","price":699,"original":899,"category":"上装","desc":"Stüssy 基础 Logo T恤，280g 重磅棉，限定薄荷绿配色。","img":"","skUs":[{"spec":"M","stock":6},{"spec":"L","stock":8},{"spec":"XL","stock":4}]},
-  {"id":"p6","brand":"Off-White","name":"Industrial Belt 黄色","price":2199,"original":0,"category":"配饰","desc":"Off-White 经典工业风腰带，3米超长设计，标志性黄色。","img":"","skUs":[{"spec":"均码","stock":5}]}
+  {
+    "id": "p2",
+    "brand": "Supreme",
+    "name": "Box Logo Hooded Sweatshirt FW24",
+    "price": 3599,
+    "original": 0,
+    "category": "上装",
+    "desc": "Supreme 经典 Box Logo 连帽卫衣，重磅纯棉面料，oversize 剪裁。",
+    "img": "",
+    "skUs": [
+      {
+        "spec": "M / 黑色",
+        "stock": 2
+      },
+      {
+        "spec": "L / 黑色",
+        "stock": 3
+      },
+      {
+        "spec": "XL / 黑色",
+        "stock": 1
+      },
+      {
+        "spec": "L / 灰色",
+        "stock": 2
+      }
+    ]
+  },
+  {
+    "id": "p3",
+    "brand": "Travis Scott x Nike",
+    "name": "Air Max 1 \"Cactus Jack\"",
+    "price": 4299,
+    "original": 4999,
+    "category": "鞋款",
+    "desc": "Travis Scott 与 Nike 联名 Air Max 1，反向 Swoosh 设计，附赠多副鞋带。",
+    "img": "",
+    "skUs": [
+      {
+        "spec": "US 8 / 41",
+        "stock": 1
+      },
+      {
+        "spec": "US 9 / 42",
+        "stock": 2
+      },
+      {
+        "spec": "US 10 / 43",
+        "stock": 1
+      }
+    ]
+  },
+  {
+    "id": "p4",
+    "brand": "Chrome Hearts",
+    "name": "CH Plus 戒指 纯银",
+    "price": 5800,
+    "original": 0,
+    "category": "配饰",
+    "desc": "Chrome Hearts 经典十字花戒指，925纯银手工打造。",
+    "img": "",
+    "skUs": [
+      {
+        "spec": "US 7 / 14号",
+        "stock": 2
+      },
+      {
+        "spec": "US 8 / 16号",
+        "stock": 3
+      },
+      {
+        "spec": "US 9 / 18号",
+        "stock": 1
+      }
+    ]
+  },
+  {
+    "id": "p5",
+    "brand": "Stüssy",
+    "name": "Basic Stüssy Tee 限定色",
+    "price": 699,
+    "original": 899,
+    "category": "上装",
+    "desc": "Stüssy 基础 Logo T恤，280g 重磅棉，限定薄荷绿配色。",
+    "img": "",
+    "skUs": [
+      {
+        "spec": "M",
+        "stock": 6
+      },
+      {
+        "spec": "L",
+        "stock": 8
+      },
+      {
+        "spec": "XL",
+        "stock": 4
+      }
+    ]
+  },
+  {
+    "id": "p6",
+    "brand": "Off-White",
+    "name": "Industrial Belt 黄色",
+    "price": 2199,
+    "original": 0,
+    "category": "配饰",
+    "desc": "Off-White 经典工业风腰带，3米超长设计，标志性黄色。",
+    "img": "",
+    "skUs": [
+      {
+        "spec": "均码",
+        "stock": 5
+      }
+    ]
+  }
 ]
