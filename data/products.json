@@ -1,18 +1,1 @@
-[
-  {
-    "id": "p6",
-    "brand": "Off-White",
-    "name": "Industrial Belt 黄色",
-    "price": 2199,
-    "original": 0,
-    "category": "配饰",
-    "desc": "Off-White 经典工业风腰带，3米超长设计，标志性黄色。",
-    "img": "",
-    "skUs": [
-      {
-        "spec": "均码",
-        "stock": 5
-      }
-    ]
-  }
-]
+[]
