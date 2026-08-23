@@ -1,57 +1,5 @@
 [
   {
-    "id": "p2",
-    "brand": "Supreme",
-    "name": "Box Logo Hooded Sweatshirt FW24",
-    "price": 3599,
-    "original": 0,
-    "category": "上装",
-    "desc": "Supreme 经典 Box Logo 连帽卫衣，重磅纯棉面料，oversize 剪裁。",
-    "img": "",
-    "skUs": [
-      {
-        "spec": "M / 黑色",
-        "stock": 2
-      },
-      {
-        "spec": "L / 黑色",
-        "stock": 3
-      },
-      {
-        "spec": "XL / 黑色",
-        "stock": 1
-      },
-      {
-        "spec": "L / 灰色",
-        "stock": 2
-      }
-    ]
-  },
-  {
-    "id": "p3",
-    "brand": "Travis Scott x Nike",
-    "name": "Air Max 1 \"Cactus Jack\"",
-    "price": 4299,
-    "original": 4999,
-    "category": "鞋款",
-    "desc": "Travis Scott 与 Nike 联名 Air Max 1，反向 Swoosh 设计，附赠多副鞋带。",
-    "img": "",
-    "skUs": [
-      {
-        "spec": "US 8 / 41",
-        "stock": 1
-      },
-      {
-        "spec": "US 9 / 42",
-        "stock": 2
-      },
-      {
-        "spec": "US 10 / 43",
-        "stock": 1
-      }
-    ]
-  },
-  {
     "id": "p4",
     "brand": "Chrome Hearts",
     "name": "CH Plus 戒指 纯银",
