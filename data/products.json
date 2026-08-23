@@ -1,53 +1,5 @@
 [
   {
-    "id": "p4",
-    "brand": "Chrome Hearts",
-    "name": "CH Plus 戒指 纯银",
-    "price": 5800,
-    "original": 0,
-    "category": "配饰",
-    "desc": "Chrome Hearts 经典十字花戒指，925纯银手工打造。",
-    "img": "",
-    "skUs": [
-      {
-        "spec": "US 7 / 14号",
-        "stock": 2
-      },
-      {
-        "spec": "US 8 / 16号",
-        "stock": 3
-      },
-      {
-        "spec": "US 9 / 18号",
-        "stock": 1
-      }
-    ]
-  },
-  {
-    "id": "p5",
-    "brand": "Stüssy",
-    "name": "Basic Stüssy Tee 限定色",
-    "price": 699,
-    "original": 899,
-    "category": "上装",
-    "desc": "Stüssy 基础 Logo T恤，280g 重磅棉，限定薄荷绿配色。",
-    "img": "",
-    "skUs": [
-      {
-        "spec": "M",
-        "stock": 6
-      },
-      {
-        "spec": "L",
-        "stock": 8
-      },
-      {
-        "spec": "XL",
-        "stock": 4
-      }
-    ]
-  },
-  {
     "id": "p6",
     "brand": "Off-White",
     "name": "Industrial Belt 黄色",
