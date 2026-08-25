@@ -1,37 +1,5 @@
 [
   {
-    "id": "p2",
-    "brand": "Supreme",
-    "name": "Box Logo Hooded Sweatshirt FW24",
-    "price": 3599,
-    "original": 0,
-    "category": "上装",
-    "desc": "Supreme 经典 Box Logo 连帽卫衣，重磅纯棉面料，oversize 剪裁。",
-    "images": [],
-    "skUs": [
-      {
-        "spec": "M / 黑色",
-        "stock": 2,
-        "img": ""
-      },
-      {
-        "spec": "L / 黑色",
-        "stock": 3,
-        "img": ""
-      },
-      {
-        "spec": "XL / 黑色",
-        "stock": 1,
-        "img": ""
-      },
-      {
-        "spec": "L / 灰色",
-        "stock": 2,
-        "img": ""
-      }
-    ]
-  },
-  {
     "id": "p3",
     "brand": "Travis Scott x Nike",
     "name": "Air Max 1 \"Cactus Jack\"",
