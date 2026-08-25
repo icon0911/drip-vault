@@ -1039,13 +1039,54 @@ function confirmAddress() {
 
 function renderPayment(amount) {
   document.getElementById('paymentBody').innerHTML =
-    '<div class="payment-amount">¥' + amount + '<small>请扫描下方二维码完成支付</small></div>' +
+    '<div class="payment-amount">¥' + amount + '<small>请先扫码付款，再提交订单</small></div>' +
     '<div class="payment-methods">' +
     '<div class="payment-method active" onclick="switchPayMethod(\'微信支付\',this)"><div class="pay-icon">💚</div><div class="pay-name">微信支付</div></div>' +
     '<div class="payment-method" onclick="switchPayMethod(\'支付宝\',this)"><div class="pay-icon">💙</div><div class="pay-name">支付宝</div></div></div>' +
     '<div class="qr-container" id="payQR"><img src="images/wechat.png" alt="微信收款码" onerror="this.src=\'\';this.alt=\'收款码未配置\'"><p>长按识别二维码支付</p></div>' +
-    '<button class="btn-primary" style="margin-top:16px" onclick="confirmPayment()">我已下单，稍后付款</button>';
+    '<div style="margin-top:16px;padding:12px;background:rgba(255,77,106,.1);border:1px solid rgba(255,77,106,.3);border-radius:10px;font-size:.8rem;color:var(--accent);text-align:center">⚠️ 请务必先完成扫码付款，再点击下方按钮提交订单</div>' +
+    '<label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.85rem;color:var(--text2);cursor:pointer"><input type="checkbox" id="paidConfirm" onchange="togglePayBtn()" style="width:18px;height:18px;accent-color:var(--primary)"> 我已扫码并完成付款</label>' +
+    '<button class="btn-primary" id="paySubmitBtn" style="margin-top:12px" disabled onclick="confirmPayment()">请先扫码付款</button>';
   currentPayMethod = '微信支付';
+  startPayCountdown();
+}
+
+let payCountdown = 15;
+function startPayCountdown() {
+  payCountdown = 15;
+  const btn = document.getElementById('paySubmitBtn');
+  const cb = document.getElementById('paidConfirm');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.textContent = '请先扫码付款（' + payCountdown + 's）';
+  const timer = setInterval(() => {
+    payCountdown--;
+    if (!btn) { clearInterval(timer); return; }
+    if (cb && cb.checked && payCountdown <= 0) {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.textContent = '我已付款，提交订单';
+    } else if (payCountdown > 0) {
+      btn.textContent = '请先扫码付款（' + payCountdown + 's）';
+    } else {
+      btn.textContent = '请勾选确认已付款';
+    }
+  }, 1000);
+}
+
+function togglePayBtn() {
+  const btn = document.getElementById('paySubmitBtn');
+  const cb = document.getElementById('paidConfirm');
+  if (!btn || !cb) return;
+  if (cb.checked && payCountdown <= 0) {
+    btn.disabled = false;
+    btn.textContent = '我已付款，提交订单';
+  } else if (cb.checked) {
+    btn.textContent = '请先扫码付款（' + payCountdown + 's）';
+  } else {
+    btn.disabled = true;
+    btn.textContent = '请勾选确认已付款';
+  }
 }
 
 function switchPayMethod(method, el) {
