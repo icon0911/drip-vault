@@ -1044,7 +1044,7 @@ function renderPayment(amount) {
     '<div class="payment-method active" onclick="switchPayMethod(\'微信支付\',this)"><div class="pay-icon">💚</div><div class="pay-name">微信支付</div></div>' +
     '<div class="payment-method" onclick="switchPayMethod(\'支付宝\',this)"><div class="pay-icon">💙</div><div class="pay-name">支付宝</div></div></div>' +
     '<div class="qr-container" id="payQR"><img src="images/wechat.png" alt="微信收款码" onerror="this.src=\'\';this.alt=\'收款码未配置\'"><p>长按识别二维码支付</p></div>' +
-    '<button class="btn-primary" style="margin-top:16px" onclick="confirmPayment()">我已完成支付</button>';
+    '<button class="btn-primary" style="margin-top:16px" onclick="confirmPayment()">我已下单，稍后付款</button>';
   currentPayMethod = '微信支付';
 }
 
@@ -1069,7 +1069,7 @@ async function confirmPayment() {
     total: pendingOrder.total,
     payMethod: currentPayMethod,
     time: new Date().toLocaleString('zh-CN'),
-    status: '待发货',
+    status: '待付款',
     address: pendingOrder.address,
     tracking: { company: '', number: '' },
     coupon: pendingOrder.coupon,
@@ -1396,7 +1396,7 @@ function renderAdminOrders() {
   }
   empty.style.display = 'none';
   tbody.innerHTML = ordersData.map(o => {
-    const statusClass = o.status === '待发货' ? 'pending' : o.status === '已发货' ? 'shipped' : 'done';
+    const statusClass = o.status === '待付款' ? 'pending' : o.status === '待发货' ? 'pending' : o.status === '已发货' ? 'shipped' : 'done';
     const itemsStr = (o.items || []).map(i => esc(i.name) + ' x' + i.qty).join(', ');
     const tracking = o.tracking || {};
     return '<tr>' +
@@ -1408,11 +1408,20 @@ function renderAdminOrders() {
       '<td><span class="status-badge ' + statusClass + '">' + o.status + '</span></td>' +
       '<td style="font-size:.7rem">' + (tracking.company ? esc(tracking.company) + ' ' + esc(tracking.number) : '-') + '</td>' +
       '<td class="actions">' +
+      (o.status === '待付款' ? '<button onclick="confirmPaid(\'' + o.id + '\')">确认收款</button>' : '') +
       (o.status === '待发货' ? '<button onclick="shipOrder(\'' + o.id + '\')">发货</button>' : '') +
       (o.status === '已发货' ? '<button onclick="editTracking(\'' + o.id + '\')">编辑物流</button>' : '') +
       (o.status === '已发货' ? '<button onclick="completeOrder(\'' + o.id + '\')">确认完成</button>' : '') +
       '</td></tr>';
   }).join('');
+}
+
+function confirmPaid(id) {
+  const order = ordersData.find(o => o.id === id);
+  if (!order) return;
+  if (!confirm('确认已收到该订单付款？')) return;
+  order.status = '待发货';
+  syncOrders();
 }
 
 function shipOrder(id) {
