@@ -1,83 +1,5 @@
 [
   {
-    "id": "p1",
-    "brand": "Nike",
-    "name": "Air Jordan 1 Retro High OG Chicago",
-    "price": 2899,
-    "original": 3299,
-    "category": "鞋款",
-    "desc": "经典红白黑配色，OG鞋型复刻，全掌Air Sole气垫，皮质鞋面质感出色。Jordan Brand标志性鞋款，潮流必备。",
-    "images": [
-      "https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=600"
-    ],
-    "skus": [
-      {
-        "spec": "白色/40",
-        "stock": 3,
-        "img": ""
-      },
-      {
-        "spec": "白色/41",
-        "stock": 5,
-        "img": ""
-      },
-      {
-        "spec": "白色/42",
-        "stock": 2,
-        "img": ""
-      },
-      {
-        "spec": "白色/43",
-        "stock": 0,
-        "img": ""
-      },
-      {
-        "spec": "白色/44",
-        "stock": 4,
-        "img": ""
-      }
-    ]
-  },
-  {
-    "id": "p2",
-    "brand": "Supreme",
-    "name": "Box Logo Hooded Sweatshirt",
-    "price": 1899,
-    "original": 2199,
-    "category": "上装",
-    "desc": "Supreme经典Box Logo卫衣，重磅380g纯棉面料，oversize版型。黑色百搭，街头文化标志性单品。",
-    "images": [
-      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600"
-    ],
-    "skus": [
-      {
-        "spec": "黑色/M",
-        "stock": 6,
-        "img": ""
-      },
-      {
-        "spec": "黑色/L",
-        "stock": 4,
-        "img": ""
-      },
-      {
-        "spec": "黑色/XL",
-        "stock": 3,
-        "img": ""
-      },
-      {
-        "spec": "灰色/M",
-        "stock": 2,
-        "img": ""
-      },
-      {
-        "spec": "灰色/L",
-        "stock": 5,
-        "img": ""
-      }
-    ]
-  },
-  {
     "id": "p3",
     "brand": "Travis Scott x Nike",
     "name": "Air Force 1 Low Cactus Jack",
@@ -131,40 +53,6 @@
       {
         "spec": "银色/20号",
         "stock": 4,
-        "img": ""
-      }
-    ]
-  },
-  {
-    "id": "p5",
-    "brand": "Stüssy",
-    "name": "Basic Logo Tee 黑色",
-    "price": 599,
-    "original": 699,
-    "category": "上装",
-    "desc": "Stüssy经典Logo短袖T恤，260g精梳棉，宽松版型。背面大Logo印花，夏日街头穿搭首选。",
-    "images": [
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600"
-    ],
-    "skus": [
-      {
-        "spec": "黑色/S",
-        "stock": 8,
-        "img": ""
-      },
-      {
-        "spec": "黑色/M",
-        "stock": 10,
-        "img": ""
-      },
-      {
-        "spec": "黑色/L",
-        "stock": 7,
-        "img": ""
-      },
-      {
-        "spec": "黑色/XL",
-        "stock": 5,
         "img": ""
       }
     ]
