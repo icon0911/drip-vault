@@ -469,6 +469,7 @@ input,select,textarea{font-family:inherit;outline:none}
   </nav>
   <div class="admin-header" id="adminTabs">
     <button class="admin-tab active" data-tab="shop" onclick="switchAdminTab('shop')">店铺管理</button>
+    <button class="admin-tab" data-tab="import" onclick="switchAdminTab('import')">📦 一键导入</button>
     <button class="admin-tab" data-tab="products" onclick="switchAdminTab('products')">商品管理</button>
     <button class="admin-tab" data-tab="orders" onclick="switchAdminTab('orders')">订单管理</button>
     <button class="admin-tab" data-tab="coupons" onclick="switchAdminTab('coupons')">优惠券管理</button>
@@ -510,6 +511,63 @@ input,select,textarea{font-family:inherit;outline:none}
           <input id="shopServiceQRInput" type="hidden">
         </div>
         <button class="btn-primary" onclick="saveShop()">保存设置</button>
+      </div>
+    </div>
+    <!-- Import from 微商相册 -->
+    <div class="admin-section" id="sec-import">
+      <h3>📦 一键导入</h3>
+      <div class="admin-form">
+        <h4>从微商相册导入</h4>
+        <p style="color:var(--text2);font-size:.85rem;margin-bottom:16px">
+          操作步骤：① 在微商相册复制商品文案 → ② 粘贴到下方输入框 → ③ 上传商品图片 → ④ 点击导入
+        </p>
+        <div class="form-group">
+          <label>粘贴商品文案</label>
+          <textarea id="importText" rows="8" placeholder="粘贴微商相册的商品文案...\n\n示例格式：\n【top】万斯 范斯 / Vans Premium LX Authentic 44\nsize: 35 36 36.5 37 38 39 40\n¥2899" style="background:var(--card2);color:var(--text);border:1px solid var(--border);padding:12px;border-radius:10px;font-size:.9rem;width:100%;resize:vertical;font-family:inherit"></textarea>
+        </div>
+        <button class="btn-primary" style="margin-bottom:16px" onclick="parseImportText()">🔍 解析文案</button>
+        <div id="importParsed" style="display:none">
+          <div class="admin-form" style="background:var(--card2)">
+            <h4>解析结果（可修改）</h4>
+            <div class="form-row">
+              <div class="form-group"><label>品牌</label><input id="importBrand" placeholder="自动识别"></div>
+              <div class="form-group"><label>分类</label>
+                <select id="importCategory"><option>鞋款</option><option>上装</option><option>下装</option><option>配饰</option><option>包袋</option><option>限定</option></select>
+              </div>
+            </div>
+            <div class="form-group"><label>商品名称</label><input id="importName" placeholder="自动识别"></div>
+            <div class="form-row">
+              <div class="form-group"><label>售价 (¥)</label><input id="importPrice" type="number" placeholder="自动识别"></div>
+              <div class="form-group"><label>原价 (¥，可选)</label><input id="importOriginal" type="number" placeholder="可手动填写"></div>
+            </div>
+            <div class="form-group"><label>商品描述</label><textarea id="importDesc" rows="3" style="background:var(--card);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:10px;font-size:.9rem;width:100%;resize:vertical;font-family:inherit"></textarea></div>
+            <div class="form-group">
+              <label>尺码 / 规格（每行一个，自动填入SKU）</label>
+              <textarea id="importSkus" rows="3" placeholder="35\n36\n36.5\n37\n38" style="background:var(--card);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:10px;font-size:.9rem;width:100%;resize:vertical;font-family:inherit"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>商品图片（从微商相册下载后拖拽或点击上传）</label>
+            <div class="img-upload-area" id="importImgUploadArea">
+              <span>📎 点击或拖拽上传图片（支持多张）</span>
+              <input type="file" id="importImgUpload" accept="image/*" multiple onchange="handleImportImgUpload(this.files)">
+            </div>
+            <div class="img-preview-list" id="importImgPreviewList"></div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:16px">
+            <button class="btn-primary" style="flex:1" onclick="confirmImport()">✅ 确认导入并上架</button>
+            <button class="btn-secondary" style="flex:1" onclick="resetImport()">取消</button>
+          </div>
+        </div>
+      </div>
+      <div class="admin-form" style="margin-top:20px">
+        <h4>💡 快捷操作提示</h4>
+        <div style="color:var(--text2);font-size:.85rem;line-height:1.8">
+          <p>• <b>复制文案</b>：微商相册商品详情页 → 点击右下角「...」→ 复制文案</p>
+          <p>• <b>下载图片</b>：微商相册商品详情页 → 点击「下载」按钮 → 保存到手机</p>
+          <p>• <b>批量导入</b>：一次粘贴一个商品的文案，配合对应图片上传</p>
+          <p>• <b>自动识别</b>：支持自动提取品牌、商品名、价格、尺码等信息</p>
+        </div>
       </div>
     </div>
     <!-- Product Management -->
@@ -1394,6 +1452,158 @@ function resetProductForm() {
   document.getElementById('imgPreviewList').innerHTML = '';
   document.getElementById('skuBuilder').innerHTML = '';
   document.getElementById('imgUpload').value = '';
+}
+
+// ==================== 微商相册导入 ====================
+function parseImportText() {
+  const text = document.getElementById('importText').value.trim();
+  if (!text) { toast('请先粘贴商品文案', 'error'); return; }
+
+  let brand = '', name = '', price = '', original = '', desc = text, skusText = '';
+
+  // 提取品牌：匹配【top】后面的品牌名，或第一个 / 前的内容
+  const brandMatch = text.match(/【[^】]*】\s*([^/\n]+)/);
+  if (brandMatch) {
+    brand = brandMatch[1].trim().split(/\s+/)[0];
+  }
+
+  // 提取商品名：第一行或【】后面到换行的内容
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length > 0) {
+    // 第一行通常是品牌+商品名
+    let firstLine = lines[0].replace(/【[^】]*】\s*/, '').trim();
+    name = firstLine;
+  }
+
+  // 提取价格：匹配 ¥xxx 或 ￥xxx 或纯数字价格
+  const priceMatch = text.match(/[¥￥]\s*(\d+(?:\.\d+)?)/);
+  if (priceMatch) {
+    price = priceMatch[1];
+  }
+  // 也匹配 "价格xxx" 或 "price xxx"
+  if (!price) {
+    const priceMatch2 = text.match(/(?:价格|price|售价)[:：]?\s*(\d+(?:\.\d+)?)/i);
+    if (priceMatch2) price = priceMatch2[1];
+  }
+
+  // 提取尺码：匹配 size: xxx 或 尺码：xxx 或 S/M/L/XL 或纯数字尺码
+  const sizeMatch = text.match(/(?:size|尺码|SIZE)[:：]?\s*(.+)/i);
+  if (sizeMatch) {
+    skusText = sizeMatch[1].replace(/[\s]+/, '\n').replace(/\s+/g, '\n');
+  }
+  // 匹配数字尺码序列（如 35 36 36.5 37 38 39 40）
+  if (!skusText) {
+    const numSizeMatch = text.match(/(?:size|尺码|SIZE)[:：]?\s*([\d\s.]+(?:\s+\d+)*)/i);
+    if (numSizeMatch) {
+      skusText = numSizeMatch[1].trim().split(/\s+/).join('\n');
+    }
+  }
+  // 匹配独立的尺码行（纯数字+空格，如 35 36 36.5 37）
+  if (!skusText) {
+    const numLineMatch = text.match(/^(\d+(?:\.\d+)?(?:\s+\d+(?:\.\d+)?){2,})$/m);
+    if (numLineMatch) {
+      skusText = numLineMatch[1].trim().split(/\s+/).join('\n');
+    }
+  }
+
+  // 填充表单
+  document.getElementById('importBrand').value = brand;
+  document.getElementById('importName').value = name;
+  document.getElementById('importPrice').value = price;
+  document.getElementById('importOriginal').value = original;
+  document.getElementById('importDesc').value = desc;
+  document.getElementById('importSkus').value = skusText;
+
+  // 根据品牌/名称智能分类
+  const catKeywords = {
+    '鞋款': ['鞋', 'shoe', 'sneaker', 'boot', 'sandal', 'vans', 'nike', 'adidas', 'new balance', 'converse', 'jordan', 'yeezy', '匡威', '万斯', '范斯'],
+    '上装': ['上衣', 't恤', 't-shirt', 'shirt', '外套', '夹克', 'jacket', 'hoodie', '卫衣', '毛衣', 'polo'],
+    '下装': ['裤', 'pants', 'jeans', '短裤', 'shorts', 'skirt', '裙子'],
+    '配饰': ['帽', 'cap', 'hat', 'belt', '腰带', '项链', 'necklace', '戒指', 'ring', '手链', 'bracelet', '墨镜', 'sunglasses', '手表', 'watch'],
+    '包袋': ['包', 'bag', 'backpack', '钱包', 'wallet', '手提包', 'tote']
+  };
+  const lowerText = text.toLowerCase();
+  let detectedCat = '鞋款';
+  for (const [cat, keywords] of Object.entries(catKeywords)) {
+    if (keywords.some(kw => lowerText.includes(kw))) { detectedCat = cat; break; }
+  }
+  document.getElementById('importCategory').value = detectedCat;
+
+  document.getElementById('importParsed').style.display = 'block';
+  toast('解析成功，请检查并上传图片', 'success');
+}
+
+function handleImportImgUpload(files) {
+  const preview = document.getElementById('importImgPreviewList');
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const div = document.createElement('div');
+      div.className = 'img-preview-item';
+      div.innerHTML = '<img src="' + e.target.result + '"><button class="remove-img" onclick="this.parentElement.remove()">✕</button>';
+      preview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function confirmImport() {
+  const brand = document.getElementById('importBrand').value.trim();
+  const category = document.getElementById('importCategory').value;
+  const name = document.getElementById('importName').value.trim();
+  const price = parseFloat(document.getElementById('importPrice').value);
+  const original = parseFloat(document.getElementById('importOriginal').value) || null;
+  const desc = document.getElementById('importDesc').value.trim();
+  const skusText = document.getElementById('importSkus').value.trim();
+
+  if (!name || !price) { toast('请填写商品名称和价格', 'error'); return; }
+
+  // 收集图片
+  const imgs = [];
+  document.querySelectorAll('#importImgPreviewList .img-preview-item img').forEach(img => {
+    imgs.push(img.src);
+  });
+
+  // 解析SKU
+  const skus = [];
+  if (skusText) {
+    skusText.split('\n').forEach(s => {
+      const spec = s.trim();
+      if (spec) skus.push({ spec, stock: 99, img: '' });
+    });
+  }
+
+  // 创建商品
+  const newId = 'p' + Date.now();
+  productsData.push({ id: newId, brand, category, name, price, original, desc, images: imgs, skus });
+
+  try {
+    setSyncStatus('syncing', '同步中...');
+    await githubCommit('products.json', JSON.stringify(productsData, null, 2), 'Import product: ' + name);
+    toast('✅ 商品已导入上架: ' + name, 'success');
+    setSyncStatus('online', '已连接');
+  } catch (e) {
+    toast('导入失败: ' + e.message, 'error');
+    setSyncStatus('offline', '同步失败');
+  }
+
+  resetImport();
+  renderAdminProducts();
+  renderProducts();
+  renderStockWarning();
+}
+
+function resetImport() {
+  document.getElementById('importText').value = '';
+  document.getElementById('importParsed').style.display = 'none';
+  document.getElementById('importBrand').value = '';
+  document.getElementById('importName').value = '';
+  document.getElementById('importPrice').value = '';
+  document.getElementById('importOriginal').value = '';
+  document.getElementById('importDesc').value = '';
+  document.getElementById('importSkus').value = '';
+  document.getElementById('importImgPreviewList').innerHTML = '';
+  document.getElementById('importImgUpload').value = '';
 }
 
 async function deleteProduct(id) {
